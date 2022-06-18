@@ -31,7 +31,7 @@ setup(
     version="0.0.1",
     description=extract_short_description(),
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     license="MIT License",
     license_files=("LICENSE",),
     author=author,
