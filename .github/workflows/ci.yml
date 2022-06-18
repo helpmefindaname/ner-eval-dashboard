@@ -54,10 +54,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      publish_docker: ${{ steps.vars.outputs.publish_docker }}
     steps:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
-      - id: set-matrix
+      - id: set-vars
         run: |
           echo ::set-output name=matrix::{\"python-version\":${{ env.is_package && '[ \"3.7\", \"3.8\", \"3.9\", \"3.10\" ]' || '[ \"3.10\" ]' }} }
           echo ::set-output name=publish_docker::${{env.publish_docker}}
