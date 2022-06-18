@@ -53,8 +53,8 @@ jobs:
   prep-vars:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-      publish_docker: ${{ steps.vars.outputs.publish_docker }}
+      matrix: ${{ steps.set-vars.outputs.matrix }}
+      publish_docker: ${{ steps.set-vars.outputs.publish_docker }}
     steps:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
