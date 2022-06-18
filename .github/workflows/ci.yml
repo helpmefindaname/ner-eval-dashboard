@@ -137,4 +137,6 @@ jobs:
           context: .
           cache-from: type=local,src=/tmp/.buildx-cache
           push: true
-          tags: helpmefindaname/ner-eval-dashboard:${{ env.RELEASE_VERSION }}
+          tags: |
+            helpmefindaname/ner-eval-dashboard:${{ env.RELEASE_VERSION }}
+            helpmefindaname/ner-eval-dashboard:latest
