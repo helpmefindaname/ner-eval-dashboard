@@ -2,6 +2,8 @@ name: 'Run tests for ci cd'
 on:
   push:
     branches: [ main ]
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
   pull_request:
     branches: [ main ]
 
