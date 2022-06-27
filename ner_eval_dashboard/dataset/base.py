@@ -46,6 +46,7 @@ def convert_tags_to_labeled_text(
 class Dataset:
     def __init__(
         self,
+        name: str,
         tokenizer: Tokenizer,
         *,
         train: List[LabeledText],
@@ -53,6 +54,7 @@ class Dataset:
         test: List[LabeledText],
         unlabeled: List[Text] = None,
     ):
+        self._name = name
         self.tokenizer = tokenizer
         self._train = train
         self._val = val
@@ -67,6 +69,9 @@ class Dataset:
                 for label in ex.labels:
                     label_names.update(label.entity_type)
         self._label_names = sorted(label_names)
+
+    def __hash__(self) -> int:
+        return hash((tuple(self._train), tuple(self._val), tuple(self._test), tuple(self._unlabeled), self.tokenizer))
 
     @property
     def label_names(self) -> List[str]:
