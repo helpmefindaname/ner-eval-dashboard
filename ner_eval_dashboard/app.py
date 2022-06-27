@@ -17,11 +17,11 @@ def __filter_components(
     use_components: List[str] = None,
     exclude_components: List[str] = None,
 ) -> List[Type[Component]]:
-    if use_components is not None:
+    if use_components:
         _use_components = set(use_components)
         components = [c for c in components if c.component_name in _use_components]
 
-    if exclude_components is not None:
+    if exclude_components:
         _exclude_components = set(exclude_components)
         components = [c for c in components if c.component_name not in _exclude_components]
 
