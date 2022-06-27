@@ -1,18 +1,19 @@
 import json
 from pathlib import Path
+from typing import Any, Callable, Dict
 
 import pytest
 
 
 @pytest.fixture
-def testdata():
+def testdata() -> Callable[[Any], Path]:
     base_path = Path(__file__).parent / "tests" / "data"
     return base_path.joinpath
 
 
 @pytest.fixture
-def test_snapshots(gen_snapshots):
-    def inner(output, output_path: Path):
+def test_snapshots(gen_snapshots: bool) -> Callable[[Dict[str, Any], Path], None]:
+    def inner(output: Dict[str, Any], output_path: Path) -> None:
 
         if gen_snapshots:
             with output_path.open("w+", encoding="utf-8") as f:
@@ -25,11 +26,11 @@ def test_snapshots(gen_snapshots):
     return inner
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: Any) -> None:
     parser.addoption("--gen-snapshots", action="store_true", help="recreates outputs instead of testing")
 
 
-def pytest_generate_tests(metafunc):
+def pytest_generate_tests(metafunc: Any) -> None:
     option_value = metafunc.config.option.gen_snapshots
     if "gen_snapshots" in metafunc.fixturenames and option_value is not None:
         metafunc.parametrize("gen_snapshots", [option_value])

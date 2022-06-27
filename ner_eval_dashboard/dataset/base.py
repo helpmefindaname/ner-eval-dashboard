@@ -25,12 +25,12 @@ def combine_span_tags(tags: List[Label]) -> Label:
 
 
 def convert_tags_to_labeled_text(
-    extractor_fn: Callable[[List[Label]], Iterator[Label]], examples: Sequence[TokenLabeledText]
+    extractor_fn: Callable[[Sequence[Label]], Iterator[Label]], examples: Sequence[TokenLabeledText]
 ) -> List[LabeledTokenizedText]:
     results: List[LabeledTokenizedText] = []
     for example in examples:
-        tokens = [token.to_token() for token in example.tokens]
-        labels = list(extractor_fn(example.tokens))
+        tokens = tuple([token.to_token() for token in example.tokens])
+        labels = tuple(extractor_fn(example.tokens))
 
         results.append(
             LabeledTokenizedText.construct(
@@ -69,26 +69,30 @@ class Dataset:
         self._label_names = sorted(label_names)
 
     @property
-    def label_names(self):
+    def label_names(self) -> List[str]:
         return self._label_names
 
     @property
-    def has_unlabeled(self):
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def has_unlabeled(self) -> bool:
         return bool(self._unlabeled)
 
     @property
-    def has_train(self):
+    def has_train(self) -> bool:
         return bool(self._train)
 
     @property
-    def has_val(self):
+    def has_val(self) -> bool:
         return bool(self._val)
 
     @property
-    def has_test(self):
+    def has_test(self) -> bool:
         return bool(self._test)
 
-    def add_unlabeled(self, texts: Sequence[str]):
+    def add_unlabeled(self, texts: Sequence[str]) -> None:
         start_id = len(self._unlabeled)
         self._unlabeled.extend(
             [
@@ -99,7 +103,7 @@ class Dataset:
 
     @classmethod
     def from_bio(cls, examples: Sequence[TokenLabeledText]) -> List[LabeledTokenizedText]:
-        def convert(token_labels: List[Label]) -> Iterator[Label]:
+        def convert(token_labels: Sequence[Label]) -> Iterator[Label]:
             is_span = False
             current_tokens: List[Label] = []
             for token_label in token_labels:
@@ -121,8 +125,10 @@ class Dataset:
         return convert_tags_to_labeled_text(convert, examples)
 
     @classmethod
-    def from_bioes(cls, examples: Sequence[TokenLabeledText], s_tag="S", e_tag="E") -> List[LabeledTokenizedText]:
-        def convert(token_labels: List[Label]) -> Iterator[Label]:
+    def from_bioes(
+        cls, examples: Sequence[TokenLabeledText], s_tag: str = "S", e_tag: str = "E"
+    ) -> List[LabeledTokenizedText]:
+        def convert(token_labels: Sequence[Label]) -> Iterator[Label]:
             is_span = False
             current_tokens: List[Label] = []
             for token_label in token_labels:
