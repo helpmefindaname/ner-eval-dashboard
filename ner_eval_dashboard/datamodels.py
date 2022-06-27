@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import Any, Dict, Tuple
 
 import pydantic
 from pydantic import BaseModel
@@ -16,6 +16,9 @@ class BaseElement(BaseModel):
     dataset_type: DatasetType
     dataset_text_id: int
 
+    class Config:
+        frozen = True
+
 
 class Token(BaseModel):
     start: int
@@ -26,7 +29,7 @@ class Token(BaseModel):
         return Token.construct(text=self.text, start=self.start, end=self.end)
 
     @pydantic.validator("text")
-    def validate_text_length(cls, field_value, values, field, config):
+    def validate_text_length(cls, field_value: str, values: Dict[str, Any], field: Any, config: Any) -> str:
         start = values["start"]
         end = values["end"]
         length = len(field_value)
@@ -36,39 +39,69 @@ class Token(BaseModel):
 
         return field_value
 
+    class Config:
+        frozen = True
+
 
 class ScoredLabel(BaseModel):
     tag: str
     score: float
 
+    class Config:
+        frozen = True
+
 
 class PreTokenizedText(BaseElement):
-    tokens: List[Token]
+    tokens: Tuple[Token, ...]
+
+    class Config:
+        frozen = True
 
 
 class Text(BaseElement):
     text: str
 
+    class Config:
+        frozen = True
+
 
 class Label(Token):
     entity_type: str
 
+    class Config:
+        frozen = True
+
 
 class LabeledText(Text):
-    labels: List[Label]
+    labels: Tuple[Label, ...]
+
+    class Config:
+        frozen = True
 
 
 class TokenLabeledText(BaseElement):
-    tokens: List[Label]
+    tokens: Tuple[Label, ...]
+
+    class Config:
+        frozen = True
 
 
 class LabeledTokenizedText(PreTokenizedText):
-    labels: List[Label]
+    labels: Tuple[Label, ...]
+
+    class Config:
+        frozen = True
 
 
 class ScoredToken(Token):
-    scored_labels: List[ScoredLabel]
+    scored_labels: Tuple[ScoredLabel, ...]
+
+    class Config:
+        frozen = True
 
 
 class ScoredTokenizedText(BaseElement):
-    tokens: List[ScoredToken]
+    tokens: Tuple[ScoredToken, ...]
+
+    class Config:
+        frozen = True
