@@ -12,7 +12,10 @@ from ner_eval_dashboard.section import Section, create_base_layout, create_secti
 
 
 def __filter_components(
-    components: List[Type[Component]], use_components: List[str] = None, exclude_components: List[str] = None
+    components: List[Type[Component]],
+    dataset: Dataset,
+    use_components: List[str] = None,
+    exclude_components: List[str] = None,
 ) -> List[Type[Component]]:
     if use_components is not None:
         _use_components = set(use_components)
@@ -21,6 +24,8 @@ def __filter_components(
     if exclude_components is not None:
         _exclude_components = set(exclude_components)
         components = [c for c in components if c.component_name not in _exclude_components]
+
+    components = [c for c in components if c.can_apply(dataset)]
 
     return components
 
@@ -48,7 +53,10 @@ def create_app(
     app = Dash(name)
 
     component_cls = __filter_components(
-        predictor.components, use_components=use_components, exclude_components=exclude_components
+        predictor.components,
+        use_components=use_components,
+        exclude_components=exclude_components,
+        dataset=dataset,
     )
     created_components = [comp_cls.create(predictor, dataset) for comp_cls in component_cls]
 

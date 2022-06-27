@@ -1,10 +1,10 @@
 import abc
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any, Dict, Tuple
 
 from dash.development.base_component import Component as DashComponent
 
 from ner_eval_dashboard.cache import delete_cache, has_cache, load_cache
-from ner_eval_dashboard.datamodels import SectionType
+from ner_eval_dashboard.datamodels import SectionType, DatasetType
 from ner_eval_dashboard.dataset import Dataset
 
 if TYPE_CHECKING:
@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 class Component(abc.ABC):
     component_name: str
+    dataset_requirements: Tuple[DatasetType]
 
     def __init__(self, *args: tuple, **kwargs: dict) -> None:
         pass
@@ -31,7 +32,20 @@ class Component(abc.ABC):
 
     @classmethod
     def hash_key(cls, predictor: "Predictor", dataset: Dataset) -> str:
-        return bin(hash((predictor, dataset, cls.component_name)))
+        return bin(hash((predictor, dataset.hash(*cls.dataset_requirements), cls.component_name)))
+
+    @classmethod
+    def can_apply(cls, dataset: Dataset) -> bool:
+        if DatasetType.TRAIN in cls.dataset_requirements and not dataset.has_train:
+            return False
+        if DatasetType.VALIDATION in cls.dataset_requirements and not dataset.has_val:
+            return False
+        if DatasetType.TEST in cls.dataset_requirements and not dataset.has_test:
+            return False
+        if DatasetType.UNLABELED in cls.dataset_requirements and not dataset.has_unlabeled:
+            return False
+
+        return True
 
     @classmethod
     @abc.abstractmethod
