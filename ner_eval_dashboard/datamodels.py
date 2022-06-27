@@ -12,6 +12,10 @@ class DatasetType(str, Enum):
     UNLABELED = "unlabeled"
 
 
+class SectionType(str, Enum):
+    BASIC_METRICS = "basic_metrics"
+
+
 class BaseElement(BaseModel):
     dataset_type: DatasetType
     dataset_text_id: int
