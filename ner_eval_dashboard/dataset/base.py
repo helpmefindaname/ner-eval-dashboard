@@ -9,6 +9,7 @@ from ner_eval_dashboard.datamodels import (
     TokenLabeledText,
 )
 from ner_eval_dashboard.tokenizer import Tokenizer
+from ner_eval_dashboard.utils import RegisterMixin, setup_register
 
 
 def combine_span_tags(tags: List[Label]) -> Label:
@@ -43,7 +44,8 @@ def convert_tags_to_labeled_text(
     return results
 
 
-class Dataset:
+@setup_register
+class Dataset(RegisterMixin):
     def __init__(
         self,
         name: str,
@@ -169,3 +171,6 @@ class Dataset:
     @classmethod
     def from_bilou(cls, examples: Sequence[TokenLabeledText]) -> List[LabeledTokenizedText]:
         return cls.from_bioes(examples, s_tag="U", e_tag="L")
+
+
+Dataset.register("raw-dataset")(Dataset)

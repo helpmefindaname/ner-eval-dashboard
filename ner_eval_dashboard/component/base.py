@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Dict, Tuple
 from dash.development.base_component import Component as DashComponent
 
 from ner_eval_dashboard.cache import delete_cache, has_cache, load_cache
-from ner_eval_dashboard.datamodels import SectionType, DatasetType
+from ner_eval_dashboard.datamodels import DatasetType, SectionType
 from ner_eval_dashboard.dataset import Dataset
 
 if TYPE_CHECKING:
@@ -32,7 +32,7 @@ class Component(abc.ABC):
 
     @classmethod
     def hash_key(cls, predictor: "Predictor", dataset: Dataset) -> str:
-        return bin(hash((predictor, dataset.hash(*cls.dataset_requirements), cls.component_name)))
+        return bin(hash((predictor, dataset.hash(cls.dataset_requirements), cls.component_name)))
 
     @classmethod
     def can_apply(cls, dataset: Dataset) -> bool:
