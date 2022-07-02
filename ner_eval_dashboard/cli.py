@@ -1,4 +1,5 @@
 import argparse
+import inspect
 
 from ner_eval_dashboard.app import create_app
 from ner_eval_dashboard.dataset import Dataset
@@ -11,7 +12,12 @@ def load_predictor(args: argparse.Namespace) -> Predictor:
 
 
 def load_tokenizer(args: argparse.Namespace) -> Tokenizer:
-    pass
+    tokenizer_cls = Tokenizer.load(args.tokenizer)
+    tokenizer_args = inspect.signature(tokenizer_cls.__init__).parameters
+    if tokenizer_args != ["self"]:
+        raise ValueError(f"Tokenizer '{args.tokenizer}' cannot be instantiated via CLI. Please create a python script.")
+
+    return tokenizer_cls()
 
 
 def load_dataset(tokenizer: Tokenizer, args: argparse.Namespace) -> Dataset:
@@ -32,8 +38,8 @@ def parse_args() -> argparse.Namespace:
         type=str,
         help="the path to the file containing extra unlabeled_data",
     )
-    parser.add_argument('--use', nargs='+', help='exclude components', type=str)
-    parser.add_argument('--exclude', nargs='+', help='exclude components', type=str)
+    parser.add_argument("--use", nargs="+", help="exclude components", type=str)
+    parser.add_argument("--exclude", nargs="+", help="exclude components", type=str)
 
     return parser.parse_args()
 
