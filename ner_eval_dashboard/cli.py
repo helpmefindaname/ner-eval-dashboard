@@ -10,7 +10,15 @@ from ner_eval_dashboard.tokenizer import Tokenizer
 
 
 def load_predictor(args: argparse.Namespace) -> Predictor:
-    pass
+    predictor_cls = Predictor.load(args.predictor_type)
+    predictor_args = inspect.signature(predictor_cls.__init__).parameters
+    if predictor_args == ["self"]:
+        return predictor_cls()
+    if predictor_args == ["self", "name_or_path"]:
+        predictor_cls(name_or_path=args.predictor_name_or_path)
+    raise ValueError(
+        f"Predictor '{args.predictor_type}' cannot be instantiated via CLI. Please create a python script."
+    )
 
 
 def load_tokenizer(args: argparse.Namespace) -> Tokenizer:

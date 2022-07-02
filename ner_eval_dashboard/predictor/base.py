@@ -2,12 +2,14 @@ import abc
 from typing import TYPE_CHECKING, List, Type
 
 from ner_eval_dashboard.datamodels import LabeledTokenizedText, PreTokenizedText
+from ner_eval_dashboard.utils import RegisterMixin, setup_register
 
 if TYPE_CHECKING:
     from ner_eval_dashboard.component import Component
 
 
-class Predictor(abc.ABC):
+@setup_register
+class Predictor(abc.ABC, RegisterMixin):
     def __init__(self) -> None:
         self._components: List[Type["Component"]] = []
 
