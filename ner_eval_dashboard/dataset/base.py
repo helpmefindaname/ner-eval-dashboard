@@ -1,4 +1,4 @@
-from typing import Callable, Iterator, List, Sequence, Set, Tuple
+from typing import Any, Callable, Iterator, List, Sequence, Set, Tuple
 
 from ner_eval_dashboard.datamodels import (
     DatasetType,
@@ -70,8 +70,8 @@ class Dataset:
                     label_names.update(label.entity_type)
         self._label_names = sorted(label_names)
 
-    def hash(self, *requirements: Tuple[DatasetType]) -> int:
-        hash_data = []
+    def hash(self, requirements: Tuple[DatasetType]) -> int:
+        hash_data: List[Any] = []
         if DatasetType.TRAIN in requirements:
             hash_data.append(tuple(self._train))
         if DatasetType.VALIDATION in requirements:
