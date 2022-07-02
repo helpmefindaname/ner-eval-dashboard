@@ -1,4 +1,4 @@
-from typing import Type, Dict, List, TypeVar
+from typing import Callable, Dict, List, Type, TypeVar
 
 
 class RegisterMixin:
@@ -6,7 +6,7 @@ class RegisterMixin:
     registered_names: List[str] = []
 
     @classmethod
-    def register(cls, name: str):
+    def register(cls, name: str) -> Callable[[Type], Type]:
         def inner_register(register_cls: Type) -> Type:
             cls._registered_classes[name] = register_cls
             cls.registered_names.append(name)
@@ -19,7 +19,7 @@ class RegisterMixin:
         return cls._registered_classes[name]
 
 
-T = TypeVar("T", bound=RegisterMixin)
+T = TypeVar("T", bound=Type[RegisterMixin])
 
 
 def setup_register(cls: T) -> T:
