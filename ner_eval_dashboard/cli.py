@@ -11,11 +11,11 @@ from ner_eval_dashboard.tokenizer import Tokenizer
 
 def load_predictor(args: argparse.Namespace) -> Predictor:
     predictor_cls = Predictor.load(args.predictor_type)
-    predictor_args = inspect.signature(predictor_cls.__init__).parameters
+    predictor_args = list(inspect.signature(predictor_cls.__init__).parameters.keys())
     if predictor_args == ["self"]:
         return predictor_cls()
     if predictor_args == ["self", "name_or_path"]:
-        predictor_cls(name_or_path=args.predictor_name_or_path)
+        return predictor_cls(name_or_path=args.predictor_name_or_path)
     raise ValueError(
         f"Predictor '{args.predictor_type}' cannot be instantiated via CLI. Please create a python script."
     )
@@ -23,7 +23,7 @@ def load_predictor(args: argparse.Namespace) -> Predictor:
 
 def load_tokenizer(args: argparse.Namespace) -> Tokenizer:
     tokenizer_cls = Tokenizer.load(args.tokenizer)
-    tokenizer_args = inspect.signature(tokenizer_cls.__init__).parameters
+    tokenizer_args = list(inspect.signature(tokenizer_cls.__init__).parameters.keys())
     if tokenizer_args == ["self"]:
         return tokenizer_cls()
     raise ValueError(f"Tokenizer '{args.tokenizer}' cannot be instantiated via CLI. Please create a python script.")
@@ -31,7 +31,7 @@ def load_tokenizer(args: argparse.Namespace) -> Tokenizer:
 
 def _load_initial_dataset(tokenizer: Tokenizer, args: argparse.Namespace) -> Dataset:
     dataset_cls = Dataset.load(args.dataset_type)
-    dataset_args = inspect.signature(dataset_cls.__init__).parameters
+    dataset_args = list(inspect.signature(dataset_cls.__init__).parameters.keys())
     if dataset_args == ["self", "tokenizer"]:
         if args.dataset_path:
             logging.warning(
@@ -71,18 +71,18 @@ def load_dataset(tokenizer: Tokenizer, args: argparse.Namespace) -> Dataset:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run Ner-Eval-Dashboard")
     parser.add_argument("predictor_type", type=str, help="the type of model", choices=Predictor.registered_names)
-    parser.add_argument("predictor_path_or_name", type=str, help="the name of path of the model to use")
+    parser.add_argument("predictor_name_or_path", type=str, help="the name of path of the model to use")
     parser.add_argument("tokenizer", type=str, help="name of the tokenizer to use")
-    parser.add_argument("dataset_type", type=str, help="the type of dataset", choices=Dataset.registered_names)
+    parser.add_argument("dataset_type", type=str, help="the type of dataset")
     parser.add_argument(
-        "dataset_path",
+        "--dataset_path",
         type=str,
         default="",
         required=False,
         help="the path of the dataset to use. Leave empty if dataset doesn't require external files.",
     )
     parser.add_argument(
-        "extra_unlabeled_data",
+        "--extra_unlabeled_data",
         required=False,
         default="",
         type=str,
