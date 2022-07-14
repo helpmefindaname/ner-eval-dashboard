@@ -1,7 +1,7 @@
 import abc
-from typing import TYPE_CHECKING, List, Type
+from typing import TYPE_CHECKING, Iterable, List, Type
 
-from ner_eval_dashboard.datamodels import LabeledTokenizedText, PreTokenizedText
+from ner_eval_dashboard.datamodels import Label, LabeledTokenizedText, PreTokenizedText
 from ner_eval_dashboard.utils import RegisterMixin, setup_register
 
 if TYPE_CHECKING:
@@ -34,9 +34,22 @@ class Predictor(abc.ABC, RegisterMixin):
     def predict(self, data: List[PreTokenizedText]) -> List[LabeledTokenizedText]:
         raise NotImplementedError()
 
-    @abc.abstractmethod
     def __hash__(self) -> int:
-        raise NotImplementedError()
+        return hash((self.name, self.label_names))
+
+    @staticmethod
+    def _combine_with_labels(
+        data: Iterable[PreTokenizedText], labels: Iterable[List[Label]]
+    ) -> List[LabeledTokenizedText]:
+        return [
+            LabeledTokenizedText(
+                tokens=text.tokens,
+                dataset_type=text.dataset_type,
+                dataset_text_id=text.dataset_text_id,
+                labels=tuple(label),
+            )
+            for text, label in zip(data, labels)
+        ]
 
 
 class PredictorMixin:
