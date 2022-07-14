@@ -88,7 +88,7 @@ def parse_args() -> argparse.Namespace:
         type=str,
         help="the path to the file containing extra unlabeled_data",
     )
-    parser.add_argument("--use", nargs="+", help="exclude components", type=str)
+    parser.add_argument("--use", nargs="+", help="use specific components", type=str)
     parser.add_argument("--exclude", nargs="+", help="exclude components", type=str)
 
     return parser.parse_args()
