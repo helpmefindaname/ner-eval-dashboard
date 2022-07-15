@@ -3,7 +3,7 @@ ARG BUILD=prod
 ENV PIP_VERSION=22.1.2
 # should be fixed but as high as possible
 
-# RUN apt-get update && apt-get install -y <ubuntu-packages> # install additional packages such as tesseract, imagemagick, g++ etc. IF REQUIRED
+RUN apt-get update && apt-get install -y g++ cmake
 
 RUN pip install pip==$PIP_VERSION
 
