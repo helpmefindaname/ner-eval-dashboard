@@ -2,8 +2,7 @@ import pytest
 
 from ner_eval_dashboard.dataset import Dataset
 from ner_eval_dashboard.tokenizer import SpaceTokenizer
-
-from .test_utils import assert_dataset_standards
+from tests.test_utils import assert_dataset_standards
 
 
 @pytest.mark.parametrize("dataset_name", ["WNUT17", "WEIBO", "MOVIE_COMPLEX"])
