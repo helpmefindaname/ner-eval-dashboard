@@ -69,7 +69,7 @@ class Dataset(RegisterMixin):
         for ds in [train, val, test]:
             for ex in ds:
                 for label in ex.labels:
-                    label_names.update(label.entity_type)
+                    label_names.add(label.entity_type)
         self._label_names = sorted(label_names)
 
     def hash(self, requirements: Tuple[DatasetType]) -> int:
