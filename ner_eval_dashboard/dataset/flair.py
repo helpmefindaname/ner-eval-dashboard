@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List, Optional
 
+import flair
 from flair.data import Corpus, Sentence, Span
 from flair.datasets import (
     CONLL_03,
@@ -41,7 +42,6 @@ from flair.datasets import (
     ColumnCorpus,
     DataLoader,
 )
-import flair
 from flair.datasets.sequence_labeling import JsonlCorpus
 
 from ner_eval_dashboard.datamodels import DatasetType, Label, LabeledText
@@ -99,9 +99,7 @@ class FlairColumnDataset(FlairDataset):
         base_dir_path = Path(base_dir)
         super().__init__(
             base_dir_path.stem,
-            ColumnCorpus(
-                base_dir_path, {0: "text", 1: "pos", 3: "ner"}, autofind_splits=False, name=base_dir_path.stem
-            ),
+            ColumnCorpus(base_dir_path, {0: "text", 1: "pos", 3: "ner"}, name=base_dir_path.stem, tag_to_bioes="ner"),
             "ner",
             tokenizer,
         )
