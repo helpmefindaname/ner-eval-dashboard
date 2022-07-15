@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import List, Optional, Set
 
-from flair.data import Sentence
+from flair.data import Sentence, Span
+from flair.data import Token as FlairToken
 from flair.models import SequenceTagger
 
 from ner_eval_dashboard.datamodels import Label, LabeledTokenizedText, PreTokenizedText
@@ -32,8 +33,8 @@ class FlairPredictor(Predictor):
         labels: Set[str] = set()
 
         for label in self.tagger.label_dictionary.get_items():
-            if label[2:] in ["B-", "I-", "E-", "S-"]:
-                labels.add(label)
+            if label[:2] in ["B-", "I-", "E-", "S-"]:
+                labels.add(label[2:])
 
         self._label_names = sorted(labels)
 
@@ -52,16 +53,28 @@ class FlairPredictor(Predictor):
                 entity_type=span.tag,
                 start=span.start_position,
                 end=span.end_position,
-                text=span.text,
+                text=self._get_span_text(span),
             )
             for span in sentence.get_spans(self.tagger.label_type)
         ]
 
     @staticmethod
+    def _get_span_text(span: Span) -> str:
+        text = ""
+        for token in span.tokens:
+            text += token.text
+            text += " " * token.whitespace_after
+        return text.strip()
+
+    @staticmethod
     def _tokenized_text_to_sentence(text: PreTokenizedText) -> Sentence:
-        sentence = Sentence(text=[t.text for t in text.tokens])
-        for sentence_token, token in zip(sentence.tokens, text.tokens):
-            sentence_token.start_pos = token.start
-            sentence_token.end_pos = token.end
+        sentence = Sentence(text=[])
+        previous_token: Optional[FlairToken] = None
+        for token in text.tokens:
+            flair_token = FlairToken(token.text, start_position=token.start)
+            sentence.add_token(flair_token)
+            if previous_token is not None:
+                previous_token.whitespace_after = flair_token.start_pos - previous_token.end_pos
+            previous_token = flair_token
 
         return sentence
