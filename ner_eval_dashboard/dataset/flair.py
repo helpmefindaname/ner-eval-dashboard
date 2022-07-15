@@ -99,7 +99,7 @@ class FlairColumnDataset(FlairDataset):
         base_dir_path = Path(base_dir)
         super().__init__(
             base_dir_path.stem,
-            ColumnCorpus(base_dir_path, {0: "text", 1: "pos", 3: "ner"}, name=base_dir_path.stem, tag_to_bioes="ner"),
+            ColumnCorpus(base_dir_path, {0: "text", 1: "ner"}, name=base_dir_path.stem, tag_to_bioes="ner"),
             "ner",
             tokenizer,
         )

@@ -41,7 +41,7 @@ def test_column_corpus_dataset(testdata: Callable[[str], Path]) -> None:
 
     dataset = FlairColumnDataset(SpaceTokenizer(), str(testdata("column")))
     assert dataset.name == "column"
-    assert dataset.label_names == ["loc"]
+    assert dataset.label_names == ["LOC"]
     assert dataset.has_train
     assert dataset.has_val
     assert dataset.has_test
