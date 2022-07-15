@@ -5,7 +5,7 @@ from ner_eval_dashboard.datamodels import (
     PreTokenizedText,
     Token,
 )
-from ner_eval_dashboard.predictor import FlairPredictor
+from ner_eval_dashboard.predictor import FlairPredictor, Predictor
 
 
 def test_flair_predictor_predict() -> None:
@@ -103,3 +103,7 @@ def test_flair_predictor_predict() -> None:
     ]
 
     assert predictor.predict(examples) == expected
+
+
+def test_flair_predictor_registered() -> None:
+    assert Predictor.load("flair") == FlairPredictor
