@@ -41,6 +41,7 @@ from flair.datasets import (
     ColumnCorpus,
     DataLoader,
 )
+import flair
 from flair.datasets.sequence_labeling import JsonlCorpus
 
 from ner_eval_dashboard.datamodels import DatasetType, Label, LabeledText
@@ -53,7 +54,6 @@ class FlairDataset(Dataset):
         train = self._convert_dataset_to_examples(corpus.train, DatasetType.TRAIN, label_type)
         val = self._convert_dataset_to_examples(corpus.dev, DatasetType.VALIDATION, label_type)
         test = self._convert_dataset_to_examples(corpus.test, DatasetType.TEST, label_type)
-
         super().__init__(name, tokenizer, train=train, val=val, test=test)
 
     def _convert_dataset_to_examples(
@@ -110,10 +110,13 @@ class FlairColumnDataset(FlairDataset):
 @Dataset.register("JSONL_DATASET")
 class FlairJsonlDataset(FlairDataset):
     def __init__(self, tokenizer: Tokenizer, base_dir: str):
+        if flair.__version__ <= "0.11.3":
+            raise NotImplementedError("Flair JsonL does not support span labels yet.")
+
         base_dir_path = Path(base_dir)
         super().__init__(
             base_dir_path.stem,
-            JsonlCorpus(base_dir_path, autofind_splits=False, name=base_dir_path.stem),
+            JsonlCorpus(base_dir_path, name=base_dir_path.stem),
             "ner",
             tokenizer,
         )

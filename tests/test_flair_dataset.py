@@ -1,6 +1,7 @@
+import flair
 import pytest
 
-from ner_eval_dashboard.dataset import Dataset
+from ner_eval_dashboard.dataset import Dataset, FlairJsonlDataset
 from ner_eval_dashboard.tokenizer import SpaceTokenizer
 from tests.test_utils import assert_dataset_standards
 
@@ -11,6 +12,19 @@ def test_flair_dataset(dataset_name: str) -> None:
 
     dataset: Dataset = dataset_cls(SpaceTokenizer())
     assert dataset.name == dataset_name
+    assert dataset.has_train
+    assert dataset.has_val
+    assert dataset.has_test
+    assert not dataset.has_unlabeled
+
+    assert_dataset_standards(dataset)
+
+
+@pytest.mark.skipif(flair.__version__ <= "0.11.3", reason="Flair JsonL does not support span labels yet.")
+def test_jsonl_dataset(testdata) -> None:
+
+    dataset = FlairJsonlDataset(SpaceTokenizer(), str(testdata("jsonl")))
+    assert dataset.name == "jsonl"
     assert dataset.has_train
     assert dataset.has_val
     assert dataset.has_test
