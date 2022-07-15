@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List, Optional
 
 from flair.data import Corpus, Sentence, Span
@@ -38,7 +39,9 @@ from flair.datasets import (
     NER_TURKU,
     WNUT_17,
     DataLoader,
+    ColumnCorpus,
 )
+from flair.datasets.sequence_labeling import JsonlCorpus
 
 from ner_eval_dashboard.datamodels import DatasetType, Label, LabeledText
 from ner_eval_dashboard.dataset import Dataset
@@ -87,6 +90,30 @@ class FlairDataset(Dataset):
                 )
                 for span in sentence.get_spans(label_type)
             ],
+        )
+
+
+@Dataset.register("COLUMN_DATASET")
+class FlairColumnDataset(FlairDataset):
+    def __init__(self, tokenizer: Tokenizer, base_dir: str):
+        base_dir = Path(base_dir)
+        super().__init__(
+            base_dir.stem,
+            ColumnCorpus(base_dir, {0: "text", 1: "pos", 3: "ner"}, autofind_splits=False, name=base_dir.stem),
+            "ner",
+            tokenizer,
+        )
+
+
+@Dataset.register("JSONL_DATASET")
+class FlairJsonlDataset(FlairDataset):
+    def __init__(self, tokenizer: Tokenizer, base_dir: str):
+        base_dir = Path(base_dir)
+        super().__init__(
+            base_dir.stem,
+            JsonlCorpus(base_dir, autofind_splits=False, name=base_dir.stem),
+            "ner",
+            tokenizer,
         )
 
 
