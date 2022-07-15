@@ -38,8 +38,8 @@ from flair.datasets import (
     NER_SWEDISH,
     NER_TURKU,
     WNUT_17,
-    DataLoader,
     ColumnCorpus,
+    DataLoader,
 )
 from flair.datasets.sequence_labeling import JsonlCorpus
 
@@ -96,10 +96,12 @@ class FlairDataset(Dataset):
 @Dataset.register("COLUMN_DATASET")
 class FlairColumnDataset(FlairDataset):
     def __init__(self, tokenizer: Tokenizer, base_dir: str):
-        base_dir = Path(base_dir)
+        base_dir_path = Path(base_dir)
         super().__init__(
-            base_dir.stem,
-            ColumnCorpus(base_dir, {0: "text", 1: "pos", 3: "ner"}, autofind_splits=False, name=base_dir.stem),
+            base_dir_path.stem,
+            ColumnCorpus(
+                base_dir_path, {0: "text", 1: "pos", 3: "ner"}, autofind_splits=False, name=base_dir_path.stem
+            ),
             "ner",
             tokenizer,
         )
@@ -108,10 +110,10 @@ class FlairColumnDataset(FlairDataset):
 @Dataset.register("JSONL_DATASET")
 class FlairJsonlDataset(FlairDataset):
     def __init__(self, tokenizer: Tokenizer, base_dir: str):
-        base_dir = Path(base_dir)
+        base_dir_path = Path(base_dir)
         super().__init__(
-            base_dir.stem,
-            JsonlCorpus(base_dir, autofind_splits=False, name=base_dir.stem),
+            base_dir_path.stem,
+            JsonlCorpus(base_dir_path, autofind_splits=False, name=base_dir_path.stem),
             "ner",
             tokenizer,
         )
