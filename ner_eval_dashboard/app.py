@@ -3,6 +3,7 @@ from typing import Dict, List, Type
 
 from dash import Dash
 from dash.development.base_component import Component as DashComponent
+import dash_bootstrap_components as dbc
 
 from ner_eval_dashboard.component import Component
 from ner_eval_dashboard.datamodels import SectionType
@@ -50,7 +51,11 @@ def create_app(
     use_components: List[str] = None,
     exclude_components: List[str] = None,
 ) -> Dash:
-    app = Dash(name, title=f"Ner-Eval-Dashboard for {predictor.name} on {dataset.name}")
+    app = Dash(
+        name,
+        title=f"Ner-Eval-Dashboard for {predictor.name} on {dataset.name}",
+        external_stylesheets=[dbc.themes.BOOTSTRAP],
+    )
 
     component_cls = __filter_components(
         predictor.components,
