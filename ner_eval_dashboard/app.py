@@ -50,7 +50,7 @@ def create_app(
     use_components: List[str] = None,
     exclude_components: List[str] = None,
 ) -> Dash:
-    app = Dash(name)
+    app = Dash(name, title=f"Ner-Eval-Dashboard for {predictor.name} on {dataset.name}")
 
     component_cls = __filter_components(
         predictor.components,
