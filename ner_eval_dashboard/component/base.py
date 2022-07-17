@@ -15,7 +15,7 @@ class Component(abc.ABC):
     component_name: str
     dataset_requirements: Tuple[DatasetType]
 
-    def __init__(self, *args: tuple, **kwargs: dict) -> None:
+    def __init__(self, **kwargs: dict) -> None:
         pass
 
     @classmethod

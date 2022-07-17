@@ -1,6 +1,7 @@
 import abc
 from typing import TYPE_CHECKING, Iterable, List, Type
 
+from ner_eval_dashboard.component import F1MetricComponent
 from ner_eval_dashboard.datamodels import Label, LabeledTokenizedText, PreTokenizedText
 from ner_eval_dashboard.utils import RegisterMixin, setup_register
 
@@ -12,6 +13,7 @@ if TYPE_CHECKING:
 class Predictor(abc.ABC, RegisterMixin):
     def __init__(self) -> None:
         self._components: List[Type["Component"]] = []
+        self.add_component(F1MetricComponent)
 
     def add_component(self, component: Type["Component"]) -> None:
         self.components.append(component)
@@ -35,7 +37,7 @@ class Predictor(abc.ABC, RegisterMixin):
         raise NotImplementedError()
 
     def __hash__(self) -> int:
-        return hash((self.name, self.label_names))
+        return hash((self.name, tuple(self.label_names)))
 
     @staticmethod
     def _combine_with_labels(
