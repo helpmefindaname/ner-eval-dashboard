@@ -21,7 +21,7 @@ class Section:
             children=[
                 html.H2(children=self.name),
                 html.P(children=self.description),
-                html.Div(children=components),
+                html.Div(children=[c.to_dash_component() for c in components]),
             ]
         )
 
