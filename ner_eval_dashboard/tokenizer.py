@@ -6,6 +6,9 @@ from ner_eval_dashboard.utils import RegisterMixin, setup_register
 
 @setup_register
 class Tokenizer(abc.ABC, RegisterMixin):
+    def __init__(self):
+        pass
+
     @abc.abstractmethod
     def tokenize(self, text: Text) -> PreTokenizedText:
         raise NotImplementedError()
