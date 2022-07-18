@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Dict, List
+from collections import defaultdict
+from typing import TYPE_CHECKING, Any, Dict, List, Sequence, Tuple
 
 from dash import html
 from dash.development.base_component import Component as DashComponent
@@ -6,6 +7,7 @@ from dash.development.base_component import Component as DashComponent
 from ner_eval_dashboard.component import Component
 from ner_eval_dashboard.datamodels import (
     DatasetType,
+    Label,
     LabeledText,
     LabeledTokenizedText,
     SectionType,
@@ -31,6 +33,13 @@ def acc(tp: int, n: int) -> float:
 
 def acc_dict(tp: dict[str, int], n: dict[str, int], labels: list[str]) -> Dict[str, float]:
     return {label: acc(tp[label], n[label]) for label in labels}
+
+
+def list_to_type_span_dict(labels: Sequence[Label]) -> Dict[str, List[Tuple[int, int]]]:
+    result: Dict[str, List[Tuple[int, int]]] = defaultdict(list)
+    for label in labels:
+        result[label.entity_type].append((label.start, label.end))
+    return result
 
 
 def f1_score_dict(precisions: dict[str, float], recalls: dict[str, float], label_names: List[str]) -> dict[str, float]:
@@ -124,6 +133,58 @@ class F1MetricComponent(Component):
         for text_id in predictions_per_id.keys():
             text_labels = labels_per_id[text_id].labels
             text_predictions = predictions_per_id[text_id].labels
+
+            text_label_spans = {(label.start, label.end): label.entity_type for label in text_labels}
+            text_prediction_spans = {(label.start, label.end): label.entity_type for label in text_predictions}
+            for span in set(list(text_label_spans.keys()) + list(text_prediction_spans.keys())):
+                if span not in text_label_spans:
+                    overlap_fp += 1
+                    micro_fp += 1
+                    cls_fps[text_prediction_spans[span]] += 1
+                if span not in text_prediction_spans:
+                    overlap_fn += 1
+                    micro_fn += 1
+                    cls_fns[text_label_spans[span]] += 1
+                if span in text_label_spans and span in text_prediction_spans:
+                    overlap_tp += 1
+                    if text_prediction_spans[span] == text_label_spans[span]:
+                        micro_tp += 1
+                        cls_tps[text_prediction_spans[span]] += 1
+                    else:
+                        micro_fp += 1
+                        micro_fn += 1
+                        cls_fps[text_prediction_spans[span]] += 1
+                        cls_fns[text_label_spans[span]] += 1
+            label_dict = list_to_type_span_dict(text_labels)
+            predictions_dict = list_to_type_span_dict(text_predictions)
+            for label_name in label_names:
+                label_spans = label_dict[label_name]
+                prediction_spans = predictions_dict[label_name]
+
+                i = 0
+                j = 0
+                while i < len(label_spans) and j < len(prediction_spans):
+                    label_start, label_end = label_spans[i]
+                    pred_start, pred_end = prediction_spans[j]
+                    if label_start < pred_end and pred_start < label_end:
+                        type_tps[label_name] += 1
+                        i += 1
+                        j += 1
+                        continue
+
+                    if label_start < pred_start:
+                        type_fns[label_name] += 1
+                        i += 1
+                    else:
+                        type_fps[label_name] += 1
+                        j += 1
+
+                while i < len(label_spans):
+                    i += 1
+                    type_fns[label_name] += 1
+                while j < len(prediction_spans):
+                    j += 1
+                    type_fps[label_name] += 1
 
         return dict(
             label_names=label_names,
