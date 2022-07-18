@@ -18,12 +18,17 @@ class Section:
         sections[self._section_type] = self
 
     def create_section(self, components: List[Component]) -> DashComponent:
-        return html.Div(
+        return dbc.Container(
             children=[
-                html.H2(children=self.name),
-                html.P(children=self.description),
-                html.Div(children=[c.to_dash_component() for c in components]),
+                html.Div(
+                    [
+                        html.H2(self.name),
+                        html.P(html.B(self.description)),
+                    ],
+                    className="row",
+                )
             ]
+            + [html.Div(children=c.to_dash_components(), className="row") for c in components],
         )
 
 

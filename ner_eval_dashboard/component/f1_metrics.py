@@ -119,36 +119,29 @@ class F1MetricComponent(Component):
             micro_precision=acc(micro_tp, micro_fp),
         )
 
-    def to_dash_component(self) -> DashComponent:
-        return dbc.Container(
-            [
-                html.Div(
-                    [
-                        html.Div(
-                            [
-                                create_table_from_records(
-                                    self.simple_header,
-                                    self.simple_table,
-                                    caption="Evaluation metrics",
-                                ),
-                            ],
-                            className="col-md-3 col-sm-3",
-                        ),
-                        html.Div(
-                            [
-                                create_table_from_records(
-                                    self.detailed_header,
-                                    self.detailed_table,
-                                    caption="Detailed Precision Recall F1 scores",
-                                ),
-                            ],
-                            className="col-md-9 col-sm-9",
-                        ),
-                    ],
-                    className="row",
-                ),
-            ]
-        )
+    def to_dash_components(self) -> List[DashComponent]:
+        return [
+            html.Div(
+                [
+                    create_table_from_records(
+                        self.simple_header,
+                        self.simple_table,
+                        caption="Evaluation metrics",
+                    ),
+                ],
+                className="col-md-3 col-sm-3",
+            ),
+            html.Div(
+                [
+                    create_table_from_records(
+                        self.detailed_header,
+                        self.detailed_table,
+                        caption="Detailed Precision Recall F1 scores",
+                    ),
+                ],
+                className="col-md-9 col-sm-9",
+            ),
+        ]
 
     @property
     def section_type(self) -> SectionType:

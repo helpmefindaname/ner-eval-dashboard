@@ -1,5 +1,5 @@
 import abc
-from typing import TYPE_CHECKING, Any, Dict, Tuple
+from typing import TYPE_CHECKING, Any, Dict, Tuple, List
 
 from dash.development.base_component import Component as DashComponent
 
@@ -53,7 +53,7 @@ class Component(abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def to_dash_component(self) -> DashComponent:
+    def to_dash_components(self) -> List[DashComponent]:
         raise NotImplementedError()
 
     @property
