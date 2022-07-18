@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Tuple
 
 from dash.development.base_component import Component as DashComponent
 
-from ner_eval_dashboard.cache import delete_cache, has_cache, load_cache
+from ner_eval_dashboard.cache import delete_cache, has_cache, load_cache, save_cache
 from ner_eval_dashboard.datamodels import DatasetType, SectionType
 from ner_eval_dashboard.dataset import Dataset
 
@@ -28,11 +28,12 @@ class Component(abc.ABC):
             except Exception:
                 delete_cache(key)
         data = cls.precompute(predictor, dataset)
+        save_cache(key, data)
         return cls(**data)
 
     @classmethod
     def hash_key(cls, predictor: "Predictor", dataset: Dataset) -> str:
-        return bin(hash((predictor, dataset.hash(cls.dataset_requirements), cls.component_name)))
+        return hex(hash((predictor, dataset.hash(cls.dataset_requirements), cls.component_name)))[2:]
 
     @classmethod
     def can_apply(cls, dataset: Dataset) -> bool:
