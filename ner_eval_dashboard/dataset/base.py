@@ -5,8 +5,9 @@ from ner_eval_dashboard.datamodels import (
     Label,
     LabeledText,
     LabeledTokenizedText,
+    PreTokenizedText,
     Text,
-    TokenLabeledText, PreTokenizedText,
+    TokenLabeledText,
 )
 from ner_eval_dashboard.tokenizer import Tokenizer
 from ner_eval_dashboard.utils import RegisterMixin, setup_register

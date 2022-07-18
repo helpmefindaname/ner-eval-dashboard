@@ -4,7 +4,12 @@ from dash import html
 from dash.development.base_component import Component as DashComponent
 
 from ner_eval_dashboard.component import Component
-from ner_eval_dashboard.datamodels import DatasetType, LabeledTokenizedText, SectionType, LabeledText
+from ner_eval_dashboard.datamodels import (
+    DatasetType,
+    LabeledText,
+    LabeledTokenizedText,
+    SectionType,
+)
 from ner_eval_dashboard.dataset import Dataset
 from ner_eval_dashboard.utils.table import create_table_from_records
 
@@ -111,7 +116,7 @@ class F1MetricComponent(Component):
         cls_fps = {n: 0 for n in label_names}
         cls_fns = {n: 0 for n in label_names}
 
-        predictions = predictor.predict(dataset.test)
+        predictions = predictor.predict(dataset.test_tokenized)
         predictions_per_id: Dict[int, LabeledTokenizedText] = {pred.dataset_text_id: pred for pred in predictions}
         labels_per_id: Dict[int, LabeledText] = {label.dataset_text_id: label for label in dataset.test}
         assert sorted(predictions_per_id.keys()) == sorted(labels_per_id.keys())
@@ -119,7 +124,6 @@ class F1MetricComponent(Component):
         for text_id in predictions_per_id.keys():
             text_labels = labels_per_id[text_id].labels
             text_predictions = predictions_per_id[text_id].labels
-            pass
 
         return dict(
             label_names=label_names,
