@@ -2,6 +2,7 @@ import abc
 from typing import TYPE_CHECKING, Any, Dict, List, Tuple
 
 from dash.development.base_component import Component as DashComponent
+from loguru import logger
 
 from ner_eval_dashboard.cache import delete_cache, has_cache, load_cache, save_cache
 from ner_eval_dashboard.datamodels import DatasetType, SectionType
@@ -22,11 +23,14 @@ class Component(abc.ABC):
     def create(cls, predictor: "Predictor", dataset: Dataset) -> "Component":
         key = cls.hash_key(predictor, dataset)
         if has_cache(key):
+            logger.info(f"Try loading cache for {cls.component_name}")
             data = load_cache(key)
             try:
                 return cls(**data)
             except Exception:
+                logger.exception(f"Error loading cache for {cls.component_name}: Deleting invalid cache")
                 delete_cache(key)
+        logger.info(f"Computing parameters for {cls.component_name}")
         data = cls.precompute(predictor, dataset)
         save_cache(key, data)
         return cls(**data)
