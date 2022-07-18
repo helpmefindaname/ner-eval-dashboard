@@ -6,7 +6,7 @@ from ner_eval_dashboard.datamodels import (
     LabeledText,
     LabeledTokenizedText,
     Text,
-    TokenLabeledText,
+    TokenLabeledText, PreTokenizedText,
 )
 from ner_eval_dashboard.tokenizer import Tokenizer
 from ner_eval_dashboard.utils import RegisterMixin, setup_register
@@ -108,6 +108,30 @@ class Dataset(RegisterMixin):
     @property
     def has_test(self) -> bool:
         return bool(self._test)
+
+    @property
+    def train(self) -> List[LabeledText]:
+        return self._train
+
+    @property
+    def val(self) -> List[LabeledText]:
+        return self._val
+
+    @property
+    def test(self) -> List[LabeledText]:
+        return self._test
+
+    @property
+    def train_tokenized(self) -> List[PreTokenizedText]:
+        return self.tokenizer.tokenize_labeled_seq(self._train)
+
+    @property
+    def val_tokenized(self) -> List[PreTokenizedText]:
+        return self.tokenizer.tokenize_labeled_seq(self._val)
+
+    @property
+    def test_tokenized(self) -> List[PreTokenizedText]:
+        return self.tokenizer.tokenize_labeled_seq(self._test)
 
     def add_unlabeled(self, texts: Sequence[str]) -> None:
         start_id = len(self._unlabeled)

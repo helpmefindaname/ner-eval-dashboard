@@ -1,6 +1,7 @@
 import abc
+from typing import List, Sequence
 
-from ner_eval_dashboard.datamodels import PreTokenizedText, Text, Token
+from ner_eval_dashboard.datamodels import PreTokenizedText, Text, Token, LabeledText
 from ner_eval_dashboard.utils import RegisterMixin, setup_register
 
 
@@ -15,6 +16,12 @@ class Tokenizer(abc.ABC, RegisterMixin):
 
     def __hash__(self) -> int:
         return hash(self.__class__.__name__)
+
+    def tokenize_labeled_seq(self, texts: Sequence[LabeledText]) -> List[PreTokenizedText]:
+        return [
+            self.tokenize(text)
+            for text in texts
+        ]
 
 
 @Tokenizer.register("space")
