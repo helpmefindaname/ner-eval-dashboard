@@ -78,7 +78,7 @@ class F1MetricComponent(Component):
             with_name(precisions, "Precision"),
             with_name(f1, "F1"),
             with_name(type_recalls, "Type-Recall"),
-            with_name(type_precisions, "Type_precision"),
+            with_name(type_precisions, "Type-precision"),
             with_name(type_f1, "Type-F1"),
         ]
         self.detailed_header = (
