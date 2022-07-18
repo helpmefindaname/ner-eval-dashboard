@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Any, Dict, List
 
-import dash_bootstrap_components as dbc
 from dash import html
 from dash.development.base_component import Component as DashComponent
 
@@ -19,18 +18,22 @@ def f1_score(precision: float, recall: float) -> float:
     return 2 * precision * recall / (precision + recall)
 
 
-def acc(tp: int, n: int):
+def acc(tp: int, n: int) -> float:
     if tp + n == 0:
         return 0
     return tp / (tp + n)
 
 
-def acc_dict(tp: dict[str, int], n: dict[str, int], labels: list[str]):
+def acc_dict(tp: dict[str, int], n: dict[str, int], labels: list[str]) -> Dict[str, float]:
     return {label: acc(tp[label], n[label]) for label in labels}
 
 
 def f1_score_dict(precisions: dict[str, float], recalls: dict[str, float], label_names: List[str]) -> dict[str, float]:
     return {label: f1_score(recalls[label], precisions[label]) for label in label_names}
+
+
+def with_name(values: dict[str, float], name: str) -> dict[str, Any]:
+    return {**values, "name": name}
 
 
 class F1MetricComponent(Component):
@@ -55,14 +58,15 @@ class F1MetricComponent(Component):
 
         for d in [recalls, precisions, f1, type_recalls, type_precisions, type_f1]:
             d["avg"] = sum(d.values()) / len(d)
-        recalls["name"] = "Recall"
-        precisions["name"] = "Precision"
-        f1["name"] = "F1"
-        type_recalls["name"] = "Type-Recall"
-        type_precisions["name"] = "Type-Precision"
-        type_f1["name"] = "Type-F1"
 
-        self.detailed_table = [recalls, precisions, f1, type_recalls, type_precisions, type_f1]
+        self.detailed_table = [
+            with_name(recalls, "Recall"),
+            with_name(precisions, "Precision"),
+            with_name(f1, "F1"),
+            with_name(type_recalls, "Type-Recall"),
+            with_name(type_precisions, "Type_precision"),
+            with_name(type_f1, "Type-F1"),
+        ]
         self.detailed_header = (
             [{"name": "Metric", "id": "name"}]
             + [{"name": label, "id": label, "format": "{:.0%}"} for label in label_names]

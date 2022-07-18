@@ -6,7 +6,7 @@ from ner_eval_dashboard.utils import RegisterMixin, setup_register
 
 @setup_register
 class Tokenizer(abc.ABC, RegisterMixin):
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     @abc.abstractmethod

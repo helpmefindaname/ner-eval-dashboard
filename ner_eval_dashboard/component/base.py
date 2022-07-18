@@ -1,5 +1,5 @@
 import abc
-from typing import TYPE_CHECKING, Any, Dict, Tuple, List
+from typing import TYPE_CHECKING, Any, Dict, List, Tuple
 
 from dash.development.base_component import Component as DashComponent
 

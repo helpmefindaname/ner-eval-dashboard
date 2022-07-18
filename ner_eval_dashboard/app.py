@@ -1,9 +1,9 @@
 from collections import defaultdict
 from typing import Dict, List, Type
 
+import dash_bootstrap_components as dbc
 from dash import Dash
 from dash.development.base_component import Component as DashComponent
-import dash_bootstrap_components as dbc
 
 from ner_eval_dashboard.component import Component
 from ner_eval_dashboard.datamodels import SectionType

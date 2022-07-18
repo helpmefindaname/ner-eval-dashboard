@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 import dash_bootstrap_components as dbc
 from dash import html
