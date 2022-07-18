@@ -1,12 +1,13 @@
 from typing import TYPE_CHECKING, Any, Dict, List
 
 import dash_bootstrap_components as dbc
-from dash import dash_table
+from dash import html
 from dash.development.base_component import Component as DashComponent
 
 from ner_eval_dashboard.component import Component
 from ner_eval_dashboard.datamodels import SectionType, DatasetType
 from ner_eval_dashboard.dataset import Dataset
+from ner_eval_dashboard.utils.table import create_table_from_records
 
 if TYPE_CHECKING:
     from ner_eval_dashboard.predictor import Predictor
@@ -64,8 +65,8 @@ class F1MetricComponent(Component):
         self.detailed_table = [recalls, precisions, f1, type_recalls, type_precisions, type_f1]
         self.detailed_header = (
             [{"name": "Metric", "id": "name"}]
-            + [{"name": label, "id": label} for label in label_names]
-            + [{"name": "Avg.", "id": "avg"}]
+            + [{"name": label, "id": label, "format": "{:.0%}"} for label in label_names]
+            + [{"name": "Avg.", "id": "avg", "format": "{:.0%}"}]
         )
 
         overlap_f1 = f1_score(overlap_precision, overlap_recall)
@@ -85,7 +86,7 @@ class F1MetricComponent(Component):
         ]
         self.simple_header = [
             {"name": "Metric", "id": "name"},
-            {"name": "value", "id": "value"},
+            {"name": "value", "id": "value", "format": "{:.0%}"},
         ]
 
         super(F1MetricComponent, self).__init__()
@@ -121,15 +122,30 @@ class F1MetricComponent(Component):
     def to_dash_component(self) -> DashComponent:
         return dbc.Container(
             [
-                dbc.Label("Evaluation metrics"),
-                dash_table.DataTable(
-                    self.simple_table,
-                    self.simple_header,
-                ),
-                dbc.Label("Detailed Precision Recall F1 scores"),
-                dash_table.DataTable(
-                    self.detailed_table,
-                    self.detailed_header,
+                html.Div(
+                    [
+                        html.Div(
+                            [
+                                create_table_from_records(
+                                    self.simple_header,
+                                    self.simple_table,
+                                    caption="Evaluation metrics",
+                                ),
+                            ],
+                            className="col-md-3 col-sm-3",
+                        ),
+                        html.Div(
+                            [
+                                create_table_from_records(
+                                    self.detailed_header,
+                                    self.detailed_table,
+                                    caption="Detailed Precision Recall F1 scores",
+                                ),
+                            ],
+                            className="col-md-9 col-sm-9",
+                        ),
+                    ],
+                    className="row",
                 ),
             ]
         )

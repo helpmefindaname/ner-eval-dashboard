@@ -38,7 +38,7 @@ def create_sections() -> Dict[SectionType, Section]:
 def create_base_layout(dash_sections: List[DashComponent], predictor: Predictor, dataset: Dataset) -> DashComponent:
     return dbc.Container(
         children=[
-            html.H1(children=f"Ner Eval Dashboard for Model {predictor.name} on {dataset.name}"),
+            html.H1(f"Ner Eval Dashboard for Model {predictor.name} on {dataset.name}"),
             html.Div(children=dash_sections),
         ]
     )
