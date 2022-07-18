@@ -37,7 +37,7 @@ class Component(abc.ABC):
 
     @classmethod
     def hash_key(cls, predictor: "Predictor", dataset: Dataset) -> str:
-        return hex(hash((predictor, dataset.hash(cls.dataset_requirements), cls.component_name)))[2:]
+        return hex(abs(hash((predictor, dataset.hash(cls.dataset_requirements), cls.component_name))))[2:]
 
     @classmethod
     def can_apply(cls, dataset: Dataset) -> bool:
