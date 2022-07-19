@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y g++ cmake
 RUN pip install pip==$PIP_VERSION
 
 WORKDIR /app
-CMD ["ner_eval_dashboard"]
+ENTRYPOINT ["ner_eval_dashboard"]
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
