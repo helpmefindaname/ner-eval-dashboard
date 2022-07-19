@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+import dash_bootstrap_components as dbc
 from dash import html
 from dash.development.base_component import Component as DashComponent
 
@@ -17,12 +18,17 @@ class Section:
         sections[self._section_type] = self
 
     def create_section(self, components: List[Component]) -> DashComponent:
-        return html.Div(
+        return dbc.Container(
             children=[
-                html.H2(children=self.name),
-                html.P(children=self.description),
-                html.Div(children=components),
+                html.Div(
+                    [
+                        html.H2(self.name),
+                        html.P(html.B(self.description)),
+                    ],
+                    className="row",
+                )
             ]
+            + [html.Div(children=c.to_dash_components(), className="row") for c in components],
         )
 
 
@@ -35,9 +41,9 @@ def create_sections() -> Dict[SectionType, Section]:
 
 
 def create_base_layout(dash_sections: List[DashComponent], predictor: Predictor, dataset: Dataset) -> DashComponent:
-    return html.Div(
+    return dbc.Container(
         children=[
-            html.H1(children=f"Ner Eval Dashboard for Model {predictor.name} on {dataset.name}"),
+            html.H1(f"Ner Eval Dashboard for {predictor.name} on {dataset.name}"),
             html.Div(children=dash_sections),
         ]
     )

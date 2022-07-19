@@ -1,3 +1,5 @@
 flair>=0.11
 pydantic
 dash
+dash_bootstrap_components
+loguru

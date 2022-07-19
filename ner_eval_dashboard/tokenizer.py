@@ -1,20 +1,27 @@
 import abc
+from typing import List, Sequence
 
-from ner_eval_dashboard.datamodels import PreTokenizedText, Text, Token
+from ner_eval_dashboard.datamodels import LabeledText, PreTokenizedText, Text, Token
 from ner_eval_dashboard.utils import RegisterMixin, setup_register
 
 
 @setup_register
 class Tokenizer(abc.ABC, RegisterMixin):
+    def __init__(self) -> None:
+        pass
+
     @abc.abstractmethod
     def tokenize(self, text: Text) -> PreTokenizedText:
         raise NotImplementedError()
 
-    def __hash__(self) -> int:
-        return hash(self.__class__.__name__)
+    def hash(self) -> str:
+        return self.__class__.__name__
+
+    def tokenize_labeled_seq(self, texts: Sequence[LabeledText]) -> List[PreTokenizedText]:
+        return [self.tokenize(text) for text in texts]
 
 
-@Tokenizer.register("space")
+@Tokenizer.register("SPACE")
 class SpaceTokenizer(Tokenizer):
     def tokenize(self, text: Text) -> PreTokenizedText:
         text_tokens = text.text.split(" ")
@@ -29,6 +36,4 @@ class SpaceTokenizer(Tokenizer):
 
             start = end
 
-        return PreTokenizedText(
-            dataset_type=text.dataset_type, dataset_text_id=text.dataset_text_id, tokens=tuple(tokens)
-        )
+        return PreTokenizedText(dataset_type=text.dataset_type, dataset_text_id=text.dataset_text_id, tokens=tokens)

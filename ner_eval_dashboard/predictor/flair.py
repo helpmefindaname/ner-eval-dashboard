@@ -9,14 +9,17 @@ from ner_eval_dashboard.datamodels import Label, LabeledTokenizedText, PreTokeni
 from ner_eval_dashboard.predictor import Predictor
 
 
-@Predictor.register("flair")
+@Predictor.register("FLAIR")
 class FlairPredictor(Predictor):
     def __init__(self, name_or_path: str):
         super().__init__()
         self.tagger: SequenceTagger = SequenceTagger.load(name_or_path)
         possible_path = Path(name_or_path)
         if possible_path.exists():
-            self._name = possible_path.stem
+            if possible_path.stem in ["pytorch_model", "final-model", "best-model"]:
+                self._name = possible_path.parent.stem
+            else:
+                self._name = possible_path.stem
         else:
             self._name = name_or_path
         self._label_names: Optional[List[str]] = None

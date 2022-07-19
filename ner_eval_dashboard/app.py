@@ -1,6 +1,7 @@
 from collections import defaultdict
 from typing import Dict, List, Type
 
+import dash_bootstrap_components as dbc
 from dash import Dash
 from dash.development.base_component import Component as DashComponent
 
@@ -50,7 +51,11 @@ def create_app(
     use_components: List[str] = None,
     exclude_components: List[str] = None,
 ) -> Dash:
-    app = Dash(name)
+    app = Dash(
+        name,
+        title=f"Ner-Eval-Dashboard for {predictor.name} on {dataset.name}",
+        external_stylesheets=[dbc.themes.BOOTSTRAP],
+    )
 
     component_cls = __filter_components(
         predictor.components,

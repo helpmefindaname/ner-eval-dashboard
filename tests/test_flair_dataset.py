@@ -13,7 +13,7 @@ from tests.test_utils import assert_dataset_standards
 def test_flair_dataset(dataset_name: str) -> None:
     dataset_cls = Dataset.load(dataset_name)
 
-    dataset: Dataset = dataset_cls(SpaceTokenizer())
+    dataset: Dataset = dataset_cls(SpaceTokenizer())  # typing: ignore
     assert dataset.name == dataset_name
     assert dataset.has_train
     assert dataset.has_val
