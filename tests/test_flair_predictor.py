@@ -1,6 +1,5 @@
 from ner_eval_dashboard.datamodels import (
     DatasetType,
-    Label,
     LabeledTokenizedText,
     PreTokenizedText,
     Token,
@@ -84,11 +83,7 @@ def test_flair_predictor_predict() -> None:
                 Token(text="Amadeus", start=71, end=78),
                 Token(text="Mozart", start=79, end=85),
             ],
-            labels=[
-                Label(start=10, end=17, text="Austria", entity_type="LOC"),
-                Label(start=32, end=48, text="Sigmund    Freud", entity_type="PER"),
-                Label(start=62, end=85, text="Wolfgang Amadeus Mozart", entity_type="PER"),
-            ],
+            labels=[],
         ),
     ]
 
