@@ -31,7 +31,7 @@ def acc(tp: int, n: int) -> float:
     return tp / (tp + n)
 
 
-def acc_dict(tp: dict[str, int], n: dict[str, int], labels: list[str]) -> Dict[str, float]:
+def acc_dict(tp: Dict[str, int], n: Dict[str, int], labels: List[str]) -> Dict[str, float]:
     return {label: acc(tp[label], n[label]) for label in labels}
 
 
@@ -42,11 +42,11 @@ def list_to_type_span_dict(labels: Sequence[Label]) -> Dict[str, List[Tuple[int,
     return result
 
 
-def f1_score_dict(precisions: dict[str, float], recalls: dict[str, float], label_names: List[str]) -> dict[str, float]:
+def f1_score_dict(precisions: Dict[str, float], recalls: Dict[str, float], label_names: List[str]) -> Dict[str, float]:
     return {label: f1_score(recalls[label], precisions[label]) for label in label_names}
 
 
-def with_name(values: dict[str, float], name: str) -> dict[str, Any]:
+def with_name(values: Dict[str, float], name: str) -> Dict[str, Any]:
     return {**values, "name": name}
 
 
