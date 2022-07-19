@@ -21,7 +21,7 @@ class Tokenizer(abc.ABC, RegisterMixin):
         return [self.tokenize(text) for text in texts]
 
 
-@Tokenizer.register("space")
+@Tokenizer.register("SPACE")
 class SpaceTokenizer(Tokenizer):
     def tokenize(self, text: Text) -> PreTokenizedText:
         text_tokens = text.text.split(" ")
