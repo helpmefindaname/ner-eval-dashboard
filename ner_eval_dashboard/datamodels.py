@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, List
 
 import pydantic
 from pydantic import BaseModel
@@ -56,7 +56,7 @@ class ScoredLabel(BaseModel):
 
 
 class PreTokenizedText(BaseElement):
-    tokens: Tuple[Token, ...]
+    tokens: List[Token]
 
     class Config:
         frozen = True
@@ -77,35 +77,35 @@ class Label(Token):
 
 
 class LabeledText(Text):
-    labels: Tuple[Label, ...]
+    labels: List[Label]
 
     class Config:
         frozen = True
 
 
 class TokenLabeledText(BaseElement):
-    tokens: Tuple[Label, ...]
+    tokens: List[Label]
 
     class Config:
         frozen = True
 
 
 class LabeledTokenizedText(PreTokenizedText):
-    labels: Tuple[Label, ...]
+    labels: List[Label]
 
     class Config:
         frozen = True
 
 
 class ScoredToken(Token):
-    scored_labels: Tuple[ScoredLabel, ...]
+    scored_labels: List[ScoredLabel]
 
     class Config:
         frozen = True
 
 
 class ScoredTokenizedText(BaseElement):
-    tokens: Tuple[ScoredToken, ...]
+    tokens: List[ScoredToken]
 
     class Config:
         frozen = True

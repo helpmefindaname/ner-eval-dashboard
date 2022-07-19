@@ -1,4 +1,6 @@
-from typing import Any, Callable, Iterator, List, Sequence, Set, Tuple
+from typing import Callable, Iterator, List, Sequence, Set, Tuple
+
+from pydantic import BaseModel
 
 from ner_eval_dashboard.datamodels import (
     DatasetType,
@@ -11,6 +13,7 @@ from ner_eval_dashboard.datamodels import (
 )
 from ner_eval_dashboard.tokenizer import Tokenizer
 from ner_eval_dashboard.utils import RegisterMixin, setup_register
+from ner_eval_dashboard.utils.hash import json_hash
 
 
 def combine_span_tags(tags: List[Label]) -> Label:
@@ -31,8 +34,8 @@ def convert_tags_to_labeled_text(
 ) -> List[LabeledTokenizedText]:
     results: List[LabeledTokenizedText] = []
     for example in examples:
-        tokens = tuple([token.to_token() for token in example.tokens])
-        labels = tuple(extractor_fn(example.tokens))
+        tokens = [token.to_token() for token in example.tokens]
+        labels = list(extractor_fn(example.tokens))
 
         results.append(
             LabeledTokenizedText.construct(
@@ -73,18 +76,17 @@ class Dataset(RegisterMixin):
                     label_names.add(label.entity_type)
         self._label_names = sorted(label_names)
 
-    def hash(self, requirements: Tuple[DatasetType]) -> int:
-        hash_data: List[Any] = []
+    def hash(self, requirements: Tuple[DatasetType]) -> str:
+        hash_data: List[BaseModel] = []
         if DatasetType.TRAIN in requirements:
-            hash_data.append(tuple(self._train))
+            hash_data.extend(self._train)
         if DatasetType.VALIDATION in requirements:
-            hash_data.append(tuple(self._val))
+            hash_data.extend(self._val)
         if DatasetType.TEST in requirements:
-            hash_data.append(tuple(self._test))
+            hash_data.extend(self._test)
         if DatasetType.UNLABELED in requirements:
-            hash_data.append(tuple(self._unlabeled))
-        hash_data.append(self.tokenizer)
-        return hash(tuple(hash_data))
+            hash_data.extend(self._unlabeled)
+        return json_hash([self.tokenizer.hash(), *[ex.json() for ex in hash_data]])
 
     @property
     def label_names(self) -> List[str]:

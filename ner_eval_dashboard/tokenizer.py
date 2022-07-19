@@ -14,8 +14,8 @@ class Tokenizer(abc.ABC, RegisterMixin):
     def tokenize(self, text: Text) -> PreTokenizedText:
         raise NotImplementedError()
 
-    def __hash__(self) -> int:
-        return hash(self.__class__.__name__)
+    def hash(self) -> str:
+        return self.__class__.__name__
 
     def tokenize_labeled_seq(self, texts: Sequence[LabeledText]) -> List[PreTokenizedText]:
         return [self.tokenize(text) for text in texts]
@@ -36,6 +36,4 @@ class SpaceTokenizer(Tokenizer):
 
             start = end
 
-        return PreTokenizedText(
-            dataset_type=text.dataset_type, dataset_text_id=text.dataset_text_id, tokens=tuple(tokens)
-        )
+        return PreTokenizedText(dataset_type=text.dataset_type, dataset_text_id=text.dataset_text_id, tokens=tokens)

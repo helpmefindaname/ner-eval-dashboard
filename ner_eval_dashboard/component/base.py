@@ -7,6 +7,7 @@ from loguru import logger
 from ner_eval_dashboard.cache import delete_cache, has_cache, load_cache, save_cache
 from ner_eval_dashboard.datamodels import DatasetType, SectionType
 from ner_eval_dashboard.dataset import Dataset
+from ner_eval_dashboard.utils.hash import json_hash
 
 if TYPE_CHECKING:
     from ner_eval_dashboard.predictor import Predictor
@@ -30,6 +31,8 @@ class Component(abc.ABC):
             except Exception:
                 logger.exception(f"Error loading cache for {cls.component_name}: Deleting invalid cache")
                 delete_cache(key)
+        else:
+            logger.debug(f"No cache for `{key}` found.")
         logger.info(f"Computing parameters for {cls.component_name}")
         data = cls.precompute(predictor, dataset)
         save_cache(key, data)
@@ -37,7 +40,7 @@ class Component(abc.ABC):
 
     @classmethod
     def hash_key(cls, predictor: "Predictor", dataset: Dataset) -> str:
-        return hex(abs(hash((predictor, dataset.hash(cls.dataset_requirements), cls.component_name))))[2:]
+        return json_hash([dataset.hash(cls.dataset_requirements), predictor.hash(), cls.component_name])
 
     @classmethod
     def can_apply(cls, dataset: Dataset) -> bool:
