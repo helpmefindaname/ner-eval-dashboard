@@ -95,11 +95,11 @@ class F1MetricComponent(Component):
             for name, value in [
                 ("Macro-F1", f1["avg"]),
                 ("Micro-F1", micro_f1),
-                ("Overlap-F1", overlap_f1),
+                ("Boundary-F1", overlap_f1),
                 ("Micro-Precision", micro_precision),
                 ("Micro-Recall", micro_recall),
-                ("Overlap-Precision", overlap_precision),
-                ("Overlap-Recall", overlap_recall),
+                ("Boundary-Precision", overlap_precision),
+                ("Boundary-Recall", overlap_recall),
             ]
         ]
         self.simple_header = [
