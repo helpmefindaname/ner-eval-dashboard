@@ -198,4 +198,4 @@ class Dataset(RegisterMixin):
         return cls.from_bioes(examples, s_tag="U", e_tag="L")
 
 
-Dataset.register("raw-dataset")(Dataset)
+Dataset.register("RAW")(Dataset)
