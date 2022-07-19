@@ -9,7 +9,7 @@ from ner_eval_dashboard.datamodels import Label, LabeledTokenizedText, PreTokeni
 from ner_eval_dashboard.predictor import Predictor
 
 
-@Predictor.register("flair")
+@Predictor.register("FLAIR")
 class FlairPredictor(Predictor):
     def __init__(self, name_or_path: str):
         super().__init__()

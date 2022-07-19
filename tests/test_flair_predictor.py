@@ -106,4 +106,4 @@ def test_flair_predictor_predict() -> None:
 
 
 def test_flair_predictor_registered() -> None:
-    assert Predictor.load("flair") == FlairPredictor
+    assert Predictor.load("FLAIR") == FlairPredictor
