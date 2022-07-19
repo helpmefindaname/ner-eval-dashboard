@@ -14,6 +14,7 @@ with open("requirements-dev.txt", "r", encoding="utf-8") as f:
 
 with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
+    long_description = long_description[long_description.index("#"):]
 
 
 def extract_short_description() -> str:
