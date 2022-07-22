@@ -14,6 +14,7 @@ class DatasetType(str, Enum):
 
 class SectionType(str, Enum):
     BASIC_METRICS = "basic_metrics"
+    EXAMPLES = "examples"
 
 
 class BaseElement(BaseModel):

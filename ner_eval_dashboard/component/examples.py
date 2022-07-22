@@ -207,13 +207,13 @@ def create_prediction_error_span(prediction_label_text: LabelPredictionText) -> 
     )
 
 
-class TrainingExamples(Component):
+class TrainingExamplesComponent(Component):
     dataset_requirements = (DatasetType.TRAIN,)
     component_name = "training-examples"
 
     def __init__(self, examples: List[Dict[str, Any]]) -> None:
-        self.examples = [LabelPredictionText.parse_obj(ex) for ex in examples]
-        super(TrainingExamples, self).__init__()
+        self.examples = [PredictionErrorSpans.parse_obj(ex) for ex in examples]
+        super(TrainingExamplesComponent, self).__init__()
 
     @classmethod
     def precompute(cls, predictor: "Predictor", dataset: Dataset) -> Dict[str, Any]:
@@ -222,9 +222,11 @@ class TrainingExamples(Component):
         labels_per_id: Dict[int, LabeledText] = {label.dataset_text_id: label for label in dataset.train}
 
         examples = [
-            LabelPredictionText.from_prediction_label_pair(
-                predictions_per_id[text_id],
-                labels_per_id[text_id],
+            create_prediction_error_span(
+                LabelPredictionText.from_prediction_label_pair(
+                    predictions_per_id[text_id],
+                    labels_per_id[text_id],
+                )
             )
             for text_id in set(list(predictions_per_id.keys()) + list(labels_per_id.keys()))
             if predictions_per_id[text_id].labels != labels_per_id[text_id].labels
