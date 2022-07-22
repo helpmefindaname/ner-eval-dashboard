@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import pydantic
 from pydantic import BaseModel
@@ -109,3 +109,47 @@ class ScoredTokenizedText(BaseElement):
 
     class Config:
         frozen = True
+
+
+class LabelPredictionText(BaseElement):
+    text: str
+    predictions: List[Label]
+    labels: List[Label]
+
+    class Config:
+        frozen = True
+
+    @classmethod
+    def from_prediction_label_pair(
+        cls, predictions: LabeledTokenizedText, labels: LabeledText
+    ) -> "LabelPredictionText":
+        return LabelPredictionText.construct(
+            text=labels.text,
+            labels=labels.labels,
+            predictions=predictions.labels,
+            dataset_text_id=labels.dataset_text_id,
+            dataset_type=labels.dataset_type,
+        )
+
+
+class ErrorType(str, Enum):
+    MATCH = "MATCH"
+    TYPE_MISMATCH = "TYPE_MISMATCH"
+    FALSE_POSITIVE = "FALSE_POSITIVE"
+    FALSE_NEGATIVE = "FALSE_NEGATIVE"
+    PARTIAL_MATCH = "PARTIAL_MATCH"
+    PARTIAL_TYPE_MISMATCH = "PARTIAL_TYPE_MISMATCH"
+    PARTIAL_FALSE_POSITIVE = "PARTIAL_FALSE_POSITIVE"
+    PARTIAL_FALSE_NEGATIVE = "PARTIAL_FALSE_NEGATIVE"
+    NONE = "NONE"
+
+
+class ErrorSpan(BaseModel):
+    text: str
+    error: ErrorType
+    expected: Optional[str]
+    predicted: Optional[str]
+
+
+class PredictionErrorSpans(BaseElement):
+    spans: List[ErrorSpan]
