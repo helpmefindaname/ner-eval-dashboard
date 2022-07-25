@@ -24,7 +24,7 @@ class Component(abc.ABC):
     def create(cls, predictor: "Predictor", dataset: Dataset) -> "Component":
         key = cls.hash_key(predictor, dataset)
         if has_cache(key):
-            logger.info(f"Try loading cache for {cls.component_name}")
+            logger.info(f"Try loading cache for {cls.component_name} (key: {key})")
             data = load_cache(key)
             try:
                 component = cls(**data)
