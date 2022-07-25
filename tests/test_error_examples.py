@@ -204,3 +204,76 @@ def test_partial_match() -> None:
     actual = create_prediction_error_span(parameter)
 
     assert actual == expected
+
+
+def test_partial_conll_validation_1143() -> None:
+
+    parameter = LabelPredictionText(
+        text="Economist Joel Naroff of First Union bank in Philadelphia said ...",
+        labels=[
+            Label(text="Joel Naroff", start=10, end=21, entity_type="PER"),
+            Label(text="First Union", start=25, end=36, entity_type="ORG"),
+            Label(text="Philadelphia", start=45, end=57, entity_type="LOC"),
+        ],
+        predictions=[
+            Label(text="Joel Naroff", start=10, end=21, entity_type="PER"),
+            Label(text="First Union bank", start=25, end=41, entity_type="ORG"),
+            Label(text="Philadelphia", start=45, end=57, entity_type="LOC"),
+        ],
+        dataset_text_id=1143,
+        dataset_type=DatasetType.VALIDATION,
+    )
+
+    expected = PredictionErrorSpans(
+        spans=[
+            ErrorSpan(text="Economist ", error=ErrorType.NONE, expected=None, predicted=None),
+            ErrorSpan(
+                text="Joel Naroff",
+                error=ErrorType.MATCH,
+                expected="PER",
+                predicted="PER",
+            ),
+            ErrorSpan(
+                text=" of ",
+                error=ErrorType.NONE,
+                expected=None,
+                predicted=None,
+            ),
+            ErrorSpan(
+                text="First Union",
+                error=ErrorType.PARTIAL_MATCH,
+                expected="ORG",
+                predicted="ORG",
+            ),
+            ErrorSpan(
+                text=" bank",
+                error=ErrorType.PARTIAL_FALSE_POSITIVE,
+                expected=None,
+                predicted="ORG",
+            ),
+            ErrorSpan(
+                text=" in ",
+                error=ErrorType.NONE,
+                expected=None,
+                predicted=None,
+            ),
+            ErrorSpan(
+                text="Philadelphia",
+                error=ErrorType.MATCH,
+                expected="LOC",
+                predicted="LOC",
+            ),
+            ErrorSpan(
+                text=" said ...",
+                error=ErrorType.NONE,
+                expected=None,
+                predicted=None,
+            ),
+        ],
+        dataset_text_id=1143,
+        dataset_type=DatasetType.VALIDATION,
+    )
+
+    actual = create_prediction_error_span(parameter)
+
+    assert actual == expected

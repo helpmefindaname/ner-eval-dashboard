@@ -57,6 +57,7 @@ def __prediction_partial_match(
                             predicted=None,
                         )
                     )
+                    label_idx += 1
                     last_pos = end_label
                 elif last_pos < preds[pred_idx].start:
                     end_pred = preds[pred_idx].end
@@ -92,6 +93,7 @@ def __prediction_partial_match(
                             predicted=preds[pred_idx].entity_type,
                         )
                     )
+                    pred_idx += 1
                     last_pos = end_pred
                 elif last_pos < labels[label_idx].start:
                     end_label = labels[label_idx].end
