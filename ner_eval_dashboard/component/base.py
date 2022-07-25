@@ -27,7 +27,9 @@ class Component(abc.ABC):
             logger.info(f"Try loading cache for {cls.component_name}")
             data = load_cache(key)
             try:
-                return cls(**data)
+                component = cls(**data)
+                logger.info(f"Successfully loaded cache for {cls.component_name}")
+                return component
             except Exception:
                 logger.exception(f"Error loading cache for {cls.component_name}: Deleting invalid cache")
                 delete_cache(key)
