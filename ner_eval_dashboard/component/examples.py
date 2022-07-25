@@ -16,7 +16,7 @@ from ner_eval_dashboard.datamodels import (
     SectionType,
 )
 from ner_eval_dashboard.dataset import Dataset
-from ner_eval_dashboard.utils.dash import error_span_view
+from ner_eval_dashboard.utils.dash import error_span_view, paginated_table
 
 if TYPE_CHECKING:
     from ner_eval_dashboard.predictor import Predictor
@@ -237,7 +237,17 @@ class TrainingExamplesComponent(Component):
         return {"examples": [ex.json() for ex in examples]}
 
     def to_dash_components(self) -> List[DashComponent]:
-        return [error_span_view(self.component_name, example) for example in self.examples]
+
+        table, callback = paginated_table(
+            self.component_name,
+            [{"name": "Training Prediction Errors", "id": "ex"}],
+            [{"ex": error_span_view(self.component_name, example)} for example in self.examples],
+            caption="Training Prediction Errors",
+        )
+
+        self._callbacks.append(callback)
+
+        return table
 
     @property
     def section_type(self) -> SectionType:

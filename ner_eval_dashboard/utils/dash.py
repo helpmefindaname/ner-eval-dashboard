@@ -1,10 +1,24 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import Input, Output, html
 from dash.development.base_component import Component
 
-from ner_eval_dashboard.datamodels import ErrorSpan, ErrorType, PredictionErrorSpans
+from ner_eval_dashboard.datamodels import (
+    Callback,
+    ErrorSpan,
+    ErrorType,
+    PredictionErrorSpans,
+)
+
+
+def __format_component(_header: Dict[str, Any], row: Dict[str, Any]) -> html.Td:
+    element = row[_header["id"]]
+    if isinstance(element, html.Td):
+        return element
+    if isinstance(element, Component) or (isinstance(element, list) and isinstance(element[0], Component)):
+        return html.Td(element)
+    return html.Td(_header.get("format", "{}").format(element))
 
 
 def create_table_from_records(header: List[Dict[str, Any]], content: List[Dict[str, Any]], caption: str) -> dbc.Table:
@@ -12,14 +26,43 @@ def create_table_from_records(header: List[Dict[str, Any]], content: List[Dict[s
         [
             html.Caption(caption),
             html.Thead([html.Tr(children=[html.Th(h["name"]) for h in header])]),
-            html.Tbody(
-                [
-                    html.Tr(children=[html.Td(h.get("format", "{}").format(row[h["id"]])) for h in header])
-                    for row in content
-                ]
-            ),
+            html.Tbody([html.Tr(children=[__format_component(h, row) for h in header]) for row in content]),
         ]
     )
+
+
+def paginated_table(
+    component_id: str, header: List[Dict[str, Any]], content: List[Dict[str, Any]], caption: str, page_size: int = 10
+) -> Tuple[Component, Callback]:
+    rows = [html.Tr(children=[__format_component(h, row) for h in header]) for row in content]
+    page_count = (len(rows) + page_size - 1) // page_size
+    pagination_id = f"{component_id}-table-pagination"
+    content_id = f"{component_id}-table-body"
+
+    def update_page(page: Optional[int]) -> List[html.Tr]:
+        if page is None:
+            return rows[:page_size]
+        page -= 1
+        return rows[page * page_size : page * page_size + page_size]
+
+    return html.Div(
+        [
+            dbc.Table(
+                [
+                    html.Caption(caption),
+                    html.Thead([html.Tr(children=[html.Th(h["name"]) for h in header])]),
+                    html.Tbody(rows[:page_size], id=content_id),
+                ]
+            ),
+            dbc.Pagination(
+                id=pagination_id,
+                first_last=True,
+                max_value=page_count,
+                fully_expanded=False,
+                previous_next=True,
+            ),
+        ]
+    ), Callback([Input(pagination_id, "active_page")], Output(content_id, "children"), update_page)
 
 
 def error_span_view(component_id: str, error_span: PredictionErrorSpans) -> Component:

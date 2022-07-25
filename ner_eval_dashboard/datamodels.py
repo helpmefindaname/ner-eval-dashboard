@@ -1,3 +1,4 @@
+from collections import namedtuple
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
@@ -154,3 +155,6 @@ class ErrorSpan(BaseModel):
 
 class PredictionErrorSpans(BaseElement):
     spans: List[ErrorSpan]
+
+
+Callback = namedtuple("Callback", ["inputs", "output", "function"])
