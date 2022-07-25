@@ -240,8 +240,14 @@ class TrainingExamplesComponent(Component):
 
         table, callback = paginated_table(
             self.component_name,
-            [{"name": "Training Prediction Errors", "id": "ex"}],
-            [{"ex": error_span_view(self.component_name, example)} for example in self.examples],
+            [{"name": "Text Id", "id": "id"}, {"name": "Training Prediction Errors", "id": "ex"}],
+            [
+                {
+                    "ex": error_span_view(self.component_name, example),
+                    "id": f"{example.dataset_type}-{example.dataset_text_id}",
+                }
+                for example in self.examples
+            ],
             caption="Training Prediction Errors",
         )
 
