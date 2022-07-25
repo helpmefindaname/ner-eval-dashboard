@@ -1,3 +1,4 @@
+import abc
 import random
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Tuple
 
@@ -13,6 +14,7 @@ from ner_eval_dashboard.datamodels import (
     LabeledTokenizedText,
     LabelPredictionText,
     PredictionErrorSpans,
+    PreTokenizedText,
     SectionType,
 )
 from ner_eval_dashboard.dataset import Dataset
@@ -208,17 +210,23 @@ def create_prediction_error_span(prediction_label_text: LabelPredictionText) -> 
     )
 
 
-class TrainingExamplesComponent(Component):
-    dataset_requirements = (DatasetType.TRAIN,)
-    component_name = "training-examples"
-
+class PredictionErrorComponent(Component, abc.ABC):
     def __init__(self, examples: List[str]) -> None:
         self.examples = [PredictionErrorSpans.parse_raw(ex) for ex in examples]
-        super(TrainingExamplesComponent, self).__init__()
+        super(PredictionErrorComponent, self).__init__()
+
+    @classmethod
+    @abc.abstractmethod
+    def get_tokenized_examples(cls, dataset: Dataset) -> List[PreTokenizedText]:
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def table_caption(self) -> str:
+        raise NotImplementedError()
 
     @classmethod
     def precompute(cls, predictor: "Predictor", dataset: Dataset) -> Dict[str, Any]:
-        predictions = predictor.predict(dataset.train_tokenized)
+        predictions = predictor.predict(cls.get_tokenized_examples(dataset))
         predictions_per_id: Dict[int, LabeledTokenizedText] = {pred.dataset_text_id: pred for pred in predictions}
         labels_per_id: Dict[int, LabeledText] = {label.dataset_text_id: label for label in dataset.train}
 
@@ -237,10 +245,10 @@ class TrainingExamplesComponent(Component):
         return {"examples": [ex.json() for ex in examples]}
 
     def to_dash_components(self) -> List[DashComponent]:
-
+        caption = self.table_caption()
         table, callback = paginated_table(
             self.component_name,
-            [{"name": "Text Id", "id": "id"}, {"name": "Training Prediction Errors", "id": "ex"}],
+            [{"name": "Text Id", "id": "id"}, {"name": caption, "id": "ex"}],
             [
                 {
                     "ex": error_span_view(self.component_name, example),
@@ -248,7 +256,7 @@ class TrainingExamplesComponent(Component):
                 }
                 for example in self.examples
             ],
-            caption="Training Prediction Errors",
+            caption=caption,
         )
 
         self._callbacks.append(callback)
@@ -258,3 +266,39 @@ class TrainingExamplesComponent(Component):
     @property
     def section_type(self) -> SectionType:
         return SectionType.EXAMPLES
+
+
+class TrainingExamplesComponent(PredictionErrorComponent):
+    @classmethod
+    def get_tokenized_examples(cls, dataset: Dataset) -> List[PreTokenizedText]:
+        return dataset.train_tokenized
+
+    def table_caption(self) -> str:
+        return "Training Prediction Errors"
+
+    dataset_requirements = (DatasetType.TRAIN,)
+    component_name = "training-examples"
+
+
+class ValidationExamplesComponent(PredictionErrorComponent):
+    @classmethod
+    def get_tokenized_examples(cls, dataset: Dataset) -> List[PreTokenizedText]:
+        return dataset.val_tokenized
+
+    def table_caption(self) -> str:
+        return "Validation Prediction Errors"
+
+    dataset_requirements = (DatasetType.VALIDATION,)
+    component_name = "validation-examples"
+
+
+class TestExamplesComponent(PredictionErrorComponent):
+    @classmethod
+    def get_tokenized_examples(cls, dataset: Dataset) -> List[PreTokenizedText]:
+        return dataset.val_tokenized
+
+    def table_caption(self) -> str:
+        return "Test Prediction Errors"
+
+    dataset_requirements = (DatasetType.TEST,)
+    component_name = "test-examples"

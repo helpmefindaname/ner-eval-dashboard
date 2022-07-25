@@ -1,7 +1,12 @@
 import abc
 from typing import TYPE_CHECKING, Iterable, List, Type
 
-from ner_eval_dashboard.component import F1MetricComponent, TrainingExamplesComponent
+from ner_eval_dashboard.component import (
+    F1MetricComponent,
+    TestExamplesComponent,
+    TrainingExamplesComponent,
+    ValidationExamplesComponent,
+)
 from ner_eval_dashboard.datamodels import Label, LabeledTokenizedText, PreTokenizedText
 from ner_eval_dashboard.utils import RegisterMixin, setup_register
 from ner_eval_dashboard.utils.hash import json_hash
@@ -16,6 +21,8 @@ class Predictor(abc.ABC, RegisterMixin):
         self._components: List[Type["Component"]] = []
         self.add_component(F1MetricComponent)
         self.add_component(TrainingExamplesComponent)
+        self.add_component(ValidationExamplesComponent)
+        self.add_component(TestExamplesComponent)
 
     def add_component(self, component: Type["Component"]) -> None:
         self.components.append(component)
