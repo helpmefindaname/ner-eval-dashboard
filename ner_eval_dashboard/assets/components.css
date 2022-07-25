@@ -15,7 +15,7 @@ mark.match.error-span, .match.tooltip > .tooltip-inner {
     background: green;
 }
 
-.match.tooltip > .tooltop-arrow {
+.match.tooltip > .tooltip-arrow::before {
     border-top-color: green;
 }
 
@@ -23,7 +23,7 @@ mark.type-mismatch.error-span, .type-mismatch.tooltip > .tooltip-inner {
     background: red;
 }
 
-.type-mismatch.tooltip > .tooltop-arrow {
+.type-mismatch.tooltip > .tooltip-arrow::before {
     border-top-color: red;
 }
 
@@ -31,7 +31,7 @@ mark.false-positive.error-span, .false-positive.tooltip > .tooltip-inner {
     background: yellow;
 }
 
-.false-positive.tooltip > .tooltop-arrow {
+.false-positive.tooltip > .tooltip-arrow::before {
     border-top-color: yellow;
 }
 
@@ -39,7 +39,7 @@ mark.false-negative.error-span, .false-negative.tooltip > .tooltip-inner {
     background: cyan;
 }
 
-.false-negative.tooltip > .tooltop-arrow {
+.false-negative.tooltip > .tooltip-arrow::before {
     border-top-color: cyan;
 }
 
@@ -47,7 +47,7 @@ mark.partial-match.error-span, .partial-match.tooltip > .tooltip-inner {
     background: lightgreen;
 }
 
-.partial-match.tooltip > .tooltop-arrow {
+.partial-match.tooltip > .tooltip-arrow::before {
     border-top-color: lightgreen;
 }
 
@@ -55,7 +55,7 @@ mark.partial-type-mismatch.error-span, .partial-type-mismatch.tooltip > .tooltip
     background: #FFCCCB;
 }
 
-.partial-type-mismatch.tooltip > .tooltop-arrow {
+.partial-type-mismatch.tooltip > .tooltip-arrow::before {
     border-top-color: #FFCCCB;
 }
 
@@ -63,7 +63,7 @@ mark.partial-false-positive.error-span, .partial-false-positive.tooltip > .toolt
     background: lightyellow;
 }
 
-.partial-false-positive.tooltip > .tooltop-arrow {
+.partial-false-positive.tooltip > .tooltip-arrow::before {
     border-top-color: lightyellow;
 }
 
@@ -71,6 +71,6 @@ mark.partial-false-negative.error-span, .partial-false-negative.tooltip > .toolt
     background: lightcyan;
 }
 
-.partial-false-negative.tooltip > .tooltop-arrow {
+.partial-false-negative.tooltip > .tooltip-arrow::before {
     border-top-color: lightcyan;
 }
