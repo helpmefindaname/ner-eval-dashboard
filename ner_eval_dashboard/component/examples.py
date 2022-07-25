@@ -217,7 +217,7 @@ class PredictionErrorComponent(Component, abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def get_tokenized_examples(cls, dataset: Dataset) -> List[PreTokenizedText]:
+    def get_tokenized_examples(cls, dataset: Dataset) -> Tuple[List[PreTokenizedText], List[LabeledText]]:
         raise NotImplementedError()
 
     @abc.abstractmethod
@@ -226,9 +226,10 @@ class PredictionErrorComponent(Component, abc.ABC):
 
     @classmethod
     def precompute(cls, predictor: "Predictor", dataset: Dataset) -> Dict[str, Any]:
-        predictions = predictor.predict(cls.get_tokenized_examples(dataset))
+        predictable, labels = cls.get_tokenized_examples(dataset)
+        predictions = predictor.predict(predictable)
         predictions_per_id: Dict[int, LabeledTokenizedText] = {pred.dataset_text_id: pred for pred in predictions}
-        labels_per_id: Dict[int, LabeledText] = {label.dataset_text_id: label for label in dataset.train}
+        labels_per_id: Dict[int, LabeledText] = {label.dataset_text_id: label for label in labels}
 
         examples = [
             create_prediction_error_span(
@@ -270,8 +271,8 @@ class PredictionErrorComponent(Component, abc.ABC):
 
 class TrainingExamplesComponent(PredictionErrorComponent):
     @classmethod
-    def get_tokenized_examples(cls, dataset: Dataset) -> List[PreTokenizedText]:
-        return dataset.train_tokenized
+    def get_tokenized_examples(cls, dataset: Dataset) -> Tuple[List[PreTokenizedText], List[LabeledText]]:
+        return dataset.train_tokenized, dataset.train
 
     def table_caption(self) -> str:
         return "Training Prediction Errors"
@@ -282,8 +283,8 @@ class TrainingExamplesComponent(PredictionErrorComponent):
 
 class ValidationExamplesComponent(PredictionErrorComponent):
     @classmethod
-    def get_tokenized_examples(cls, dataset: Dataset) -> List[PreTokenizedText]:
-        return dataset.val_tokenized
+    def get_tokenized_examples(cls, dataset: Dataset) -> Tuple[List[PreTokenizedText], List[LabeledText]]:
+        return dataset.val_tokenized, dataset.val
 
     def table_caption(self) -> str:
         return "Validation Prediction Errors"
@@ -294,8 +295,8 @@ class ValidationExamplesComponent(PredictionErrorComponent):
 
 class TestExamplesComponent(PredictionErrorComponent):
     @classmethod
-    def get_tokenized_examples(cls, dataset: Dataset) -> List[PreTokenizedText]:
-        return dataset.val_tokenized
+    def get_tokenized_examples(cls, dataset: Dataset) -> Tuple[List[PreTokenizedText], List[LabeledText]]:
+        return dataset.test_tokenized, dataset.test
 
     def table_caption(self) -> str:
         return "Test Prediction Errors"
