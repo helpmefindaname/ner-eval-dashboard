@@ -13,7 +13,7 @@ from ner_eval_dashboard.datamodels import (
     SectionType,
 )
 from ner_eval_dashboard.dataset import Dataset
-from ner_eval_dashboard.utils.table import create_table_from_records
+from ner_eval_dashboard.utils.dash import create_table_from_records
 
 if TYPE_CHECKING:
     from ner_eval_dashboard.predictor import Predictor

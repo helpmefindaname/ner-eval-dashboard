@@ -16,6 +16,7 @@ from ner_eval_dashboard.datamodels import (
     SectionType,
 )
 from ner_eval_dashboard.dataset import Dataset
+from ner_eval_dashboard.utils.dash import error_span_view
 
 if TYPE_CHECKING:
     from ner_eval_dashboard.predictor import Predictor
@@ -211,8 +212,8 @@ class TrainingExamplesComponent(Component):
     dataset_requirements = (DatasetType.TRAIN,)
     component_name = "training-examples"
 
-    def __init__(self, examples: List[Dict[str, Any]]) -> None:
-        self.examples = [PredictionErrorSpans.parse_obj(ex) for ex in examples]
+    def __init__(self, examples: List[str]) -> None:
+        self.examples = [PredictionErrorSpans.parse_raw(ex) for ex in examples]
         super(TrainingExamplesComponent, self).__init__()
 
     @classmethod
@@ -236,7 +237,7 @@ class TrainingExamplesComponent(Component):
         return {"examples": [ex.json() for ex in examples]}
 
     def to_dash_components(self) -> List[DashComponent]:
-        return []
+        return [error_span_view(self.component_name, example) for example in self.examples]
 
     @property
     def section_type(self) -> SectionType:
