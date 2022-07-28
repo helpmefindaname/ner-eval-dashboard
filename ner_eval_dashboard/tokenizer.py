@@ -20,6 +20,9 @@ class Tokenizer(abc.ABC, RegisterMixin):
     def tokenize_labeled_seq(self, texts: Sequence[LabeledText]) -> List[PreTokenizedText]:
         return [self.tokenize(text) for text in texts]
 
+    def tokenize_seq(self, texts: Sequence[Text]) -> List[PreTokenizedText]:
+        return [self.tokenize(text) for text in texts]
+
 
 @Tokenizer.register("SPACE")
 class SpaceTokenizer(Tokenizer):

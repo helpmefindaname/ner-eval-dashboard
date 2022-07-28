@@ -78,13 +78,6 @@ class Label(Token):
         frozen = True
 
 
-class LabeledText(Text):
-    labels: List[Label]
-
-    class Config:
-        frozen = True
-
-
 class TokenLabeledText(BaseElement):
     tokens: List[Label]
 
@@ -97,6 +90,28 @@ class LabeledTokenizedText(PreTokenizedText):
 
     class Config:
         frozen = True
+
+
+class LabeledText(Text):
+    labels: List[Label]
+
+    class Config:
+        frozen = True
+
+    @classmethod
+    def from_labeled_tokenized_text(cls, labeled_tokenized_text: LabeledTokenizedText) -> "LabeledText":
+        text = ""
+        last = 0
+        for token in labeled_tokenized_text.tokens:
+            text += " " * (token.start - last)
+            text += token.text
+            last = token.end
+        return cls.construct(
+            text=text,
+            labels=labeled_tokenized_text.labels,
+            dataset_type=labeled_tokenized_text.dataset_type,
+            dataset_text_id=labeled_tokenized_text.dataset_text_id,
+        )
 
 
 class ScoredToken(Token):

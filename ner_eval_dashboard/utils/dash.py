@@ -8,8 +8,11 @@ from ner_eval_dashboard.datamodels import (
     Callback,
     ErrorSpan,
     ErrorType,
+    LabeledText,
+    LabeledTokenizedText,
     PredictionErrorSpans,
 )
+from ner_eval_dashboard.utils.constants import MAX_CLASS_COLORS
 
 
 def __format_component(_header: Dict[str, Any], row: Dict[str, Any]) -> html.Td:
@@ -63,6 +66,30 @@ def paginated_table(
             ),
         ]
     ), Callback([Input(pagination_id, "active_page")], Output(content_id, "children"), update_page)
+
+
+def prediction_view(component_id: str, prediction_text: LabeledTokenizedText, labels: List[str]) -> Component:
+    spans: List[Union[str, Component]] = []
+
+    labeled_text = LabeledText.from_labeled_tokenized_text(prediction_text)
+    last = 0
+    for idx, label in enumerate(labeled_text.labels):
+        if last < label.start:
+            spans.append(labeled_text.text[last : label.start])
+
+        entity_type_id = labels.index(label.entity_type) % MAX_CLASS_COLORS
+
+        prediction_class_name = f"prediction-{entity_type_id}"
+        prediction_id = f"{component_id}-prediction-{idx}-{prediction_text.dataset_type.name.lower()}-{prediction_text.dataset_text_id}"
+        tooltip_text = label.entity_type
+
+        spans.append(html.Mark(label.text, className=f"prediction-span {prediction_class_name}", id=prediction_id))
+        spans.append(dbc.Tooltip(tooltip_text, class_name=prediction_class_name, target=prediction_id, placement="top"))
+
+    if last < len(labeled_text.text):
+        spans.append(labeled_text.text[last:])
+
+    return html.P(children=spans)
 
 
 def error_span_view(component_id: str, error_span: PredictionErrorSpans) -> Component:

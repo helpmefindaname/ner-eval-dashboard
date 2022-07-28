@@ -74,3 +74,67 @@ mark.partial-false-negative.error-span, .partial-false-negative.tooltip > .toolt
 .partial-false-negative.tooltip > .tooltip-arrow::before {
     border-top-color: lightcyan;
 }
+
+mark.prediction-0.prediction-span, .prediction-0.tooltip > .tooltip-inner {
+    background: lightgreen;
+}
+
+.prediction-0.tooltip > .tooltip-arrow::before {
+    border-top-color: lightgreen;
+}
+
+mark.prediction-1.prediction-span, .prediction-1.tooltip > .tooltip-inner {
+    background: lightblue;
+}
+
+.prediction-1.tooltip > .tooltip-arrow::before {
+    border-top-color: lightblue;
+}
+
+mark.prediction-2.prediction-span, .prediction-2.tooltip > .tooltip-inner {
+    background: #FFCCCB;
+}
+
+.prediction-2.tooltip > .tooltip-arrow::before {
+    border-top-color: #FFCCCB;
+}
+
+mark.prediction-3.prediction-span, .prediction-3.tooltip > .tooltip-inner {
+    background: yellow;
+}
+
+.prediction-3.tooltip > .tooltip-arrow::before {
+    border-top-color: yellow;
+}
+
+mark.prediction-4.prediction-span, .prediction-4.tooltip > .tooltip-inner {
+    background: cyan;
+}
+
+.prediction-4.tooltip > .tooltip-arrow::before {
+    border-top-color: cyan;
+}
+
+mark.prediction-5.prediction-span, .prediction-5.tooltip > .tooltip-inner {
+    background: purple;
+}
+
+.prediction-5.tooltip > .tooltip-arrow::before {
+    border-top-color: purple;
+}
+
+mark.prediction-6.prediction-span, .prediction-6.tooltip > .tooltip-inner {
+    background: orange;
+}
+
+.prediction-6.tooltip > .tooltip-arrow::before {
+    border-top-color: orange;
+}
+
+mark.prediction-7.prediction-span, .prediction-7.tooltip > .tooltip-inner {
+    background: gray;
+}
+
+.prediction-7.tooltip > .tooltip-arrow::before {
+    border-top-color: gray;
+}

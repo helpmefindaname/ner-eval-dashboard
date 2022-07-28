@@ -5,6 +5,7 @@ from ner_eval_dashboard.component import (
     F1MetricComponent,
     TestExamplesComponent,
     TrainingExamplesComponent,
+    UnlabeledPredictionExamplesComponent,
     ValidationExamplesComponent,
 )
 from ner_eval_dashboard.datamodels import Label, LabeledTokenizedText, PreTokenizedText
@@ -23,6 +24,7 @@ class Predictor(abc.ABC, RegisterMixin):
         self.add_component(TrainingExamplesComponent)
         self.add_component(ValidationExamplesComponent)
         self.add_component(TestExamplesComponent)
+        self.add_component(UnlabeledPredictionExamplesComponent)
 
     def add_component(self, component: Type["Component"]) -> None:
         self.components.append(component)

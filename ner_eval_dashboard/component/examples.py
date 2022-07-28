@@ -18,7 +18,11 @@ from ner_eval_dashboard.datamodels import (
     SectionType,
 )
 from ner_eval_dashboard.dataset import Dataset
-from ner_eval_dashboard.utils.dash import error_span_view, paginated_table
+from ner_eval_dashboard.utils.dash import (
+    error_span_view,
+    paginated_table,
+    prediction_view,
+)
 
 if TYPE_CHECKING:
     from ner_eval_dashboard.predictor import Predictor
@@ -305,3 +309,44 @@ class TestExamplesComponent(PredictionErrorComponent):
 
     dataset_requirements = (DatasetType.TEST,)
     component_name = "test-examples"
+
+
+class UnlabeledPredictionExamplesComponent(Component, abc.ABC):
+
+    dataset_requirements = (DatasetType.UNLABELED,)
+    component_name = "prediction-examples"
+
+    def __init__(self, examples: List[str], labels: List[str]) -> None:
+        self.examples = [LabeledTokenizedText.parse_raw(ex) for ex in examples]
+        self.labels = labels
+        super(UnlabeledPredictionExamplesComponent, self).__init__()
+
+    @classmethod
+    def precompute(cls, predictor: "Predictor", dataset: Dataset) -> Dict[str, Any]:
+        predictions = predictor.predict(dataset.unlabeled_tokenized)
+        random.shuffle(predictions)
+
+        return {"examples": [ex.json() for ex in predictions], "labels": dataset.label_names}
+
+    def to_dash_components(self) -> List[DashComponent]:
+        caption = "Unlabeled Prediction Examples"
+        table, callback = paginated_table(
+            self.component_name,
+            [{"name": "Text Id", "id": "id"}, {"name": caption, "id": "ex"}],
+            [
+                {
+                    "ex": prediction_view(self.component_name, example, self.labels),
+                    "id": f"{example.dataset_type}-{example.dataset_text_id}",
+                }
+                for example in self.examples
+            ],
+            caption=caption,
+        )
+
+        self._callbacks.append(callback)
+
+        return table
+
+    @property
+    def section_type(self) -> SectionType:
+        return SectionType.EXAMPLES
