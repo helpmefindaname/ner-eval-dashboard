@@ -25,6 +25,10 @@ class BaseElement(BaseModel):
     class Config:
         frozen = True
 
+    @property
+    def id(self) -> str:
+        return f"{self.dataset_type.value.lower()}-{self.dataset_text_id}"
+
 
 class Token(BaseModel):
     start: int

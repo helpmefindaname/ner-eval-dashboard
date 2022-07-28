@@ -80,7 +80,7 @@ def prediction_view(component_id: str, prediction_text: LabeledTokenizedText, la
         entity_type_id = labels.index(label.entity_type) % MAX_CLASS_COLORS
 
         prediction_class_name = f"prediction-{entity_type_id}"
-        prediction_id = f"{component_id}-prediction-{idx}-{prediction_text.dataset_type.name.lower()}-{prediction_text.dataset_text_id}"
+        prediction_id = f"{component_id}-prediction-{idx}-{prediction_text.id}"
         tooltip_text = label.entity_type
 
         spans.append(html.Mark(label.text, className=f"prediction-span {prediction_class_name}", id=prediction_id))
@@ -115,7 +115,7 @@ def error_span_view(component_id: str, error_span: PredictionErrorSpans) -> Comp
             assert span.error == ErrorType.PARTIAL_FALSE_NEGATIVE
             tooltip_text = f"Part expected {span.expected} but predicted nothing"
         error_class_name = span.error.name.lower().replace("_", "-")
-        span_id = f"{component_id}-{idx}-{error_span.dataset_type.name.lower()}-{error_span.dataset_text_id}"
+        span_id = f"{component_id}-{idx}-{error_span.id}"
         return [
             html.Mark(span.text, className=f"error-span {error_class_name}", id=span_id),
             dbc.Tooltip(tooltip_text, class_name=error_class_name, target=span_id, placement="top"),
