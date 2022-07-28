@@ -55,7 +55,7 @@ class Predictor(abc.ABC, RegisterMixin):
         data: Iterable[PreTokenizedText], labels: Iterable[List[Label]]
     ) -> List[LabeledTokenizedText]:
         return [
-            LabeledTokenizedText(
+            LabeledTokenizedText.construct(
                 tokens=text.tokens,
                 dataset_type=text.dataset_type,
                 dataset_text_id=text.dataset_text_id,
