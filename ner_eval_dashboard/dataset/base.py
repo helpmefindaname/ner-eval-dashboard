@@ -101,6 +101,10 @@ class Dataset(RegisterMixin):
         return bool(self._unlabeled)
 
     @property
+    def unlabeled(self) -> List[Text]:
+        return self._unlabeled
+
+    @property
     def has_train(self) -> bool:
         return bool(self._train)
 
@@ -135,6 +139,10 @@ class Dataset(RegisterMixin):
     @property
     def test_tokenized(self) -> List[PreTokenizedText]:
         return self.tokenizer.tokenize_labeled_seq(self._test)
+
+    @property
+    def unlabeled_tokenized(self) -> List[PreTokenizedText]:
+        return self.tokenizer.tokenize_seq(self._unlabeled)
 
     def add_unlabeled(self, texts: Sequence[str]) -> None:
         start_id = len(self._unlabeled)

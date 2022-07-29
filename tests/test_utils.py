@@ -1,3 +1,7 @@
+import pytest
+from pydantic import ValidationError
+
+from ner_eval_dashboard.datamodels import Token
 from ner_eval_dashboard.dataset import Dataset
 
 
@@ -12,3 +16,8 @@ def assert_dataset_standards(dataset: Dataset) -> None:
             for label in ex.labels:
                 assert label.entity_type in label_name_set
                 assert ex.text[label.start : label.end] == label.text
+
+
+def test_validation_fails_when_testing() -> None:
+    with pytest.raises(ValidationError):
+        Token.construct(text="abc", start=0, end=1)

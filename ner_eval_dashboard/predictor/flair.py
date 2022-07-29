@@ -52,7 +52,7 @@ class FlairPredictor(Predictor):
 
     def _sentence_to_labels(self, sentence: Sentence) -> List[Label]:
         return [
-            Label(
+            Label.construct(
                 entity_type=span.tag,
                 start=span.start_position,
                 end=span.end_position,

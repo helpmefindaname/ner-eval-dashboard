@@ -20,6 +20,9 @@ class Tokenizer(abc.ABC, RegisterMixin):
     def tokenize_labeled_seq(self, texts: Sequence[LabeledText]) -> List[PreTokenizedText]:
         return [self.tokenize(text) for text in texts]
 
+    def tokenize_seq(self, texts: Sequence[Text]) -> List[PreTokenizedText]:
+        return [self.tokenize(text) for text in texts]
+
 
 @Tokenizer.register("SPACE")
 class SpaceTokenizer(Tokenizer):
@@ -32,8 +35,10 @@ class SpaceTokenizer(Tokenizer):
                 continue
             start += text.text[start:].index(text_token)
             end = start + len(text_token)
-            tokens.append(Token(start=start, end=end, text=text_token))
+            tokens.append(Token.construct(start=start, end=end, text=text_token))
 
             start = end
 
-        return PreTokenizedText(dataset_type=text.dataset_type, dataset_text_id=text.dataset_text_id, tokens=tokens)
+        return PreTokenizedText.construct(
+            dataset_type=text.dataset_type, dataset_text_id=text.dataset_text_id, tokens=tokens
+        )

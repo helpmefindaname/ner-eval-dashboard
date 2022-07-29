@@ -36,6 +36,12 @@ def create_sections() -> Dict[SectionType, Section]:
     sections: Dict[SectionType, Section] = {}
 
     Section(SectionType.BASIC_METRICS, "Basic Metrics", "Standard NER Metrics.", sections)
+    Section(
+        SectionType.EXAMPLES,
+        "Example predictions",
+        "Texts and their predictions. This ranges from errors on training examples, to labels of unpredicted examples.",
+        sections,
+    )
 
     return sections
 

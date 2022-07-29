@@ -1,0 +1,140 @@
+mark.error-span {
+    padding: 0.45em 0.6em;
+    margin: 0 0.25em;
+    line-height: 3;
+    border-radius: 0.35em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone
+}
+
+.tooltip > .tooltip-inner {
+    color: black;
+}
+
+mark.match.error-span, .match.tooltip > .tooltip-inner {
+    background: green;
+}
+
+.match.tooltip > .tooltip-arrow::before {
+    border-top-color: green;
+}
+
+mark.type-mismatch.error-span, .type-mismatch.tooltip > .tooltip-inner {
+    background: red;
+}
+
+.type-mismatch.tooltip > .tooltip-arrow::before {
+    border-top-color: red;
+}
+
+mark.false-positive.error-span, .false-positive.tooltip > .tooltip-inner {
+    background: yellow;
+}
+
+.false-positive.tooltip > .tooltip-arrow::before {
+    border-top-color: yellow;
+}
+
+mark.false-negative.error-span, .false-negative.tooltip > .tooltip-inner {
+    background: cyan;
+}
+
+.false-negative.tooltip > .tooltip-arrow::before {
+    border-top-color: cyan;
+}
+
+mark.partial-match.error-span, .partial-match.tooltip > .tooltip-inner {
+    background: lightgreen;
+}
+
+.partial-match.tooltip > .tooltip-arrow::before {
+    border-top-color: lightgreen;
+}
+
+mark.partial-type-mismatch.error-span, .partial-type-mismatch.tooltip > .tooltip-inner {
+    background: #FFCCCB;
+}
+
+.partial-type-mismatch.tooltip > .tooltip-arrow::before {
+    border-top-color: #FFCCCB;
+}
+
+mark.partial-false-positive.error-span, .partial-false-positive.tooltip > .tooltip-inner {
+    background: lightyellow;
+}
+
+.partial-false-positive.tooltip > .tooltip-arrow::before {
+    border-top-color: lightyellow;
+}
+
+mark.partial-false-negative.error-span, .partial-false-negative.tooltip > .tooltip-inner {
+    background: lightcyan;
+}
+
+.partial-false-negative.tooltip > .tooltip-arrow::before {
+    border-top-color: lightcyan;
+}
+
+mark.prediction-0.prediction-span, .prediction-0.tooltip > .tooltip-inner {
+    background: lightgreen;
+}
+
+.prediction-0.tooltip > .tooltip-arrow::before {
+    border-top-color: lightgreen;
+}
+
+mark.prediction-1.prediction-span, .prediction-1.tooltip > .tooltip-inner {
+    background: lightblue;
+}
+
+.prediction-1.tooltip > .tooltip-arrow::before {
+    border-top-color: lightblue;
+}
+
+mark.prediction-2.prediction-span, .prediction-2.tooltip > .tooltip-inner {
+    background: #FFCCCB;
+}
+
+.prediction-2.tooltip > .tooltip-arrow::before {
+    border-top-color: #FFCCCB;
+}
+
+mark.prediction-3.prediction-span, .prediction-3.tooltip > .tooltip-inner {
+    background: yellow;
+}
+
+.prediction-3.tooltip > .tooltip-arrow::before {
+    border-top-color: yellow;
+}
+
+mark.prediction-4.prediction-span, .prediction-4.tooltip > .tooltip-inner {
+    background: cyan;
+}
+
+.prediction-4.tooltip > .tooltip-arrow::before {
+    border-top-color: cyan;
+}
+
+mark.prediction-5.prediction-span, .prediction-5.tooltip > .tooltip-inner {
+    background: purple;
+}
+
+.prediction-5.tooltip > .tooltip-arrow::before {
+    border-top-color: purple;
+}
+
+mark.prediction-6.prediction-span, .prediction-6.tooltip > .tooltip-inner {
+    background: orange;
+}
+
+.prediction-6.tooltip > .tooltip-arrow::before {
+    border-top-color: orange;
+}
+
+mark.prediction-7.prediction-span, .prediction-7.tooltip > .tooltip-inner {
+    background: gray;
+}
+
+.prediction-7.tooltip > .tooltip-arrow::before {
+    border-top-color: gray;
+}

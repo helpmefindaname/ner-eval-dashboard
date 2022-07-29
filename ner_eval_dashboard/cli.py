@@ -64,7 +64,7 @@ def load_dataset(tokenizer: Tokenizer, args: argparse.Namespace) -> Dataset:
     dataset = _load_initial_dataset(tokenizer, args)
     if args.extra_unlabeled_data:
         with Path(args.extra_unlabeled_data).open("r", encoding="utf-8") as f:
-            dataset.add_unlabeled([line for line in f])
+            dataset.add_unlabeled([line.strip() for line in f])
     return dataset
 
 

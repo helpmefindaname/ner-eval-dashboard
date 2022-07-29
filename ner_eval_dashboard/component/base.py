@@ -5,7 +5,7 @@ from dash.development.base_component import Component as DashComponent
 from loguru import logger
 
 from ner_eval_dashboard.cache import delete_cache, has_cache, load_cache, save_cache
-from ner_eval_dashboard.datamodels import DatasetType, SectionType
+from ner_eval_dashboard.datamodels import Callback, DatasetType, SectionType
 from ner_eval_dashboard.dataset import Dataset
 from ner_eval_dashboard.utils.hash import json_hash
 
@@ -18,16 +18,18 @@ class Component(abc.ABC):
     dataset_requirements: Tuple[DatasetType]
 
     def __init__(self, **kwargs: dict) -> None:
-        pass
+        self._callbacks: List[Callback] = []
 
     @classmethod
     def create(cls, predictor: "Predictor", dataset: Dataset) -> "Component":
         key = cls.hash_key(predictor, dataset)
         if has_cache(key):
-            logger.info(f"Try loading cache for {cls.component_name}")
+            logger.info(f"Try loading cache for {cls.component_name} (key: {key})")
             data = load_cache(key)
             try:
-                return cls(**data)
+                component = cls(**data)
+                logger.info(f"Successfully loaded cache for {cls.component_name}")
+                return component
             except Exception:
                 logger.exception(f"Error loading cache for {cls.component_name}: Deleting invalid cache")
                 delete_cache(key)
@@ -68,3 +70,7 @@ class Component(abc.ABC):
     @abc.abstractmethod
     def section_type(self) -> SectionType:
         raise NotImplementedError()
+
+    @property
+    def callbacks(self) -> List[Callback]:
+        return self._callbacks
