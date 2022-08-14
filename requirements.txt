@@ -3,3 +3,4 @@ pydantic
 dash
 dash_bootstrap_components
 loguru
+explainaboard

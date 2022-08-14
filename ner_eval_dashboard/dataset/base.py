@@ -76,7 +76,7 @@ class Dataset(RegisterMixin):
                     label_names.add(label.entity_type)
         self._label_names = sorted(label_names)
 
-    def hash(self, requirements: Tuple[DatasetType]) -> str:
+    def hash(self, requirements: Tuple[DatasetType, ...]) -> str:
         hash_data: List[BaseModel] = []
         if DatasetType.TRAIN in requirements:
             hash_data.extend(self._train)
@@ -143,6 +143,34 @@ class Dataset(RegisterMixin):
     @property
     def unlabeled_tokenized(self) -> List[PreTokenizedText]:
         return self.tokenizer.tokenize_seq(self._unlabeled)
+
+    @property
+    def test_token_labeled(self) -> List[TokenLabeledText]:
+        return [
+            TokenLabeledText.from_labeled_tokenized_text(
+                LabeledTokenizedText.construct(
+                    tokens=tokenized.tokens,
+                    dataset_text_id=tokenized.dataset_text_id,
+                    dataset_type=tokenized.dataset_type,
+                    labels=labeled.labels,
+                )
+            )
+            for tokenized, labeled in zip(self.test_tokenized, self._test)
+        ]
+
+    @property
+    def train_token_labeled(self) -> List[TokenLabeledText]:
+        return [
+            TokenLabeledText.from_labeled_tokenized_text(
+                LabeledTokenizedText.construct(
+                    tokens=tokenized.tokens,
+                    dataset_text_id=tokenized.dataset_text_id,
+                    dataset_type=tokenized.dataset_type,
+                    labels=labeled.labels,
+                )
+            )
+            for tokenized, labeled in zip(self.train_tokenized, self._train)
+        ]
 
     def add_unlabeled(self, texts: Sequence[str]) -> None:
         start_id = len(self._unlabeled)

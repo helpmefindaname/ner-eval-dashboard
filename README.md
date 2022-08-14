@@ -23,6 +23,8 @@ The ner eval dashboard can be installed via:
 pip install ner-eval-dashboard==0.1
 ````
 
+**Notice:** due to dependencies, this project is not supported in Python **3.7** or older versions. Please use Python **3.8 or higher**.
+
 ## usage
 
 The ner eval dashboard can be used on various ways: cli, api or via docker.
