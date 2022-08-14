@@ -42,6 +42,12 @@ def create_sections() -> Dict[SectionType, Section]:
         "Texts and their predictions. This ranges from errors on training examples, to labels of unpredicted examples.",
         sections,
     )
+    Section(
+        SectionType.DETAILED_METRICS,
+        "More detailed metrics",
+        "More detailed evaluations that show the inner working of the model.",
+        sections,
+    )
 
     return sections
 

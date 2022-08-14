@@ -16,6 +16,7 @@ class DatasetType(str, Enum):
 class SectionType(str, Enum):
     BASIC_METRICS = "basic_metrics"
     EXAMPLES = "examples"
+    DETAILED_METRICS = "detailed_metrics"
 
 
 class BaseElement(BaseModel):
@@ -82,18 +83,60 @@ class Label(Token):
         frozen = True
 
 
+class LabeledTokenizedText(PreTokenizedText):
+    labels: List[Label]
+
+    class Config:
+        frozen = True
+
+
 class TokenLabeledText(BaseElement):
     tokens: List[Label]
 
     class Config:
         frozen = True
 
+    @classmethod
+    def from_labeled_tokenized_text(cls, labeled_tokenized_text: LabeledTokenizedText):
+        current_label: Optional[Label] = None
+        labels = iter(labeled_tokenized_text.labels)
+        next_label = next(labels, None)
+        labeled_tokens = []
+        for token in labeled_tokenized_text.tokens:
+            if current_label is not None and token.end >= current_label.end:
+                labeled_tokens.append(
+                    Label.construct(
+                        text=token.text,
+                        entity_type=f"I-{current_label.entity_type}",
+                        start=token.start,
+                        end=token.end,
+                    )
+                )
+                continue
+            current_label = None
+            if next_label is None or next_label.start > next_label.end:
+                labeled_tokens.append(
+                    Label.construct(
+                        text=token.text,
+                        entity_type="O",
+                        start=token.start,
+                        end=token.end,
+                    )
+                )
+                continue
+            current_label = next_label
+            labeled_tokens.append(
+                Label.construct(
+                    text=token.text, entity_type=f"B-{current_label.entity_type}", start=token.start, end=token.end
+                )
+            )
+            next_label = next(labels, None)
 
-class LabeledTokenizedText(PreTokenizedText):
-    labels: List[Label]
-
-    class Config:
-        frozen = True
+        return cls.construct(
+            tokens=labeled_tokens,
+            dataset_type=labeled_tokenized_text.dataset_type,
+            dataset_text_id=labeled_tokenized_text.dataset_text_id,
+        )
 
 
 class LabeledText(Text):
