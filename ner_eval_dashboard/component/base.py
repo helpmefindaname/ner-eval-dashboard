@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class Component(abc.ABC):
     component_name: str
-    dataset_requirements: Tuple[DatasetType]
+    dataset_requirements: Tuple[DatasetType, ...]
 
     def __init__(self, **kwargs: dict) -> None:
         self._callbacks: List[Callback] = []

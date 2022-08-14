@@ -97,7 +97,7 @@ class TokenLabeledText(BaseElement):
         frozen = True
 
     @classmethod
-    def from_labeled_tokenized_text(cls, labeled_tokenized_text: LabeledTokenizedText):
+    def from_labeled_tokenized_text(cls, labeled_tokenized_text: LabeledTokenizedText) -> "TokenLabeledText":
         current_label: Optional[Label] = None
         labels = iter(labeled_tokenized_text.labels)
         next_label = next(labels, None)

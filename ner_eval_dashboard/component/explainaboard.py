@@ -1,6 +1,6 @@
 import os
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, Dict, List, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Union, cast
 
 import pandas as pd
 import plotly.express as px
@@ -26,7 +26,7 @@ class ExplainaboardComponent(Component):
     )
     component_name = "explainaboard"
 
-    def __init__(self, results: Dict[str, Any], **kwargs):
+    def __init__(self, results: Dict[str, Any], **kwargs: Dict[str, Any]) -> None:
         self.value = results["overall"]["F1"]["value"]
         self.low_confidence_f1 = results["overall"]["F1"]["confidence_score_low"]
         self.high_confidence_f1 = results["overall"]["F1"]["confidence_score_high"]
@@ -100,11 +100,13 @@ class ExplainaboardComponent(Component):
         return output.to_dict()
 
     @staticmethod
-    def interval_to_str(interval: List[Union[str, float]]) -> str:
+    def interval_to_str(interval: Union[List[str], List[float]]) -> str:
         if isinstance(interval[0], str):
+            interval = cast(List[str], interval)
             if len(interval) == 1:
                 return interval[0]
             return "[" + ",".join(interval) + "]"
+        interval = cast(List[float], interval)
         return "[" + ",".join(map(str, [round(f, 2) for f in interval])) + "]"
 
     def bucket_plot(self, description: str, values: List[Dict[str, Any]]) -> DashComponent:

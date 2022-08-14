@@ -76,7 +76,7 @@ class Dataset(RegisterMixin):
                     label_names.add(label.entity_type)
         self._label_names = sorted(label_names)
 
-    def hash(self, requirements: Tuple[DatasetType]) -> str:
+    def hash(self, requirements: Tuple[DatasetType, ...]) -> str:
         hash_data: List[BaseModel] = []
         if DatasetType.TRAIN in requirements:
             hash_data.extend(self._train)
