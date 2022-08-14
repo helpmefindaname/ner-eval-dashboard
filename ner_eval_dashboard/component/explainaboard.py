@@ -9,8 +9,8 @@ from dash.development.base_component import Component as DashComponent
 from explainaboard.loaders.file_loader import FileLoaderReturn
 from explainaboard.processors.named_entity_recognition import NERProcessor
 from explainaboard.utils.cache_api import write_statistics_to_cache
-from ner_eval_dashboard.cache import cache_root
 
+from ner_eval_dashboard.cache import cache_root
 from ner_eval_dashboard.component import Component
 from ner_eval_dashboard.datamodels import DatasetType, SectionType, TokenLabeledText
 from ner_eval_dashboard.dataset import Dataset
