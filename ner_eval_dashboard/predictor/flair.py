@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 from typing import List, Optional, Set
 
@@ -7,13 +8,16 @@ from flair.models import SequenceTagger
 
 from ner_eval_dashboard.datamodels import Label, LabeledTokenizedText, PreTokenizedText
 from ner_eval_dashboard.predictor import Predictor
+from ner_eval_dashboard.predictor_mixins import DropoutPredictorMixin
 
 
 @Predictor.register("FLAIR")
-class FlairPredictor(Predictor):
+class FlairPredictor(DropoutPredictorMixin, Predictor):
     def __init__(self, name_or_path: str):
-        super().__init__()
-        self.tagger: SequenceTagger = SequenceTagger.load(name_or_path)
+        super(FlairPredictor, self).__init__()
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", FutureWarning)
+            self.tagger: SequenceTagger = SequenceTagger.load(name_or_path)
         possible_path = Path(name_or_path)
         if possible_path.exists():
             if possible_path.stem in ["pytorch_model", "final-model", "best-model"]:
@@ -45,6 +49,15 @@ class FlairPredictor(Predictor):
 
     def predict(self, data: List[PreTokenizedText]) -> List[LabeledTokenizedText]:
         sentences = list(map(self._tokenized_text_to_sentence, data))
+        self.tagger.eval()
+        self.tagger.predict(sentences)
+
+        labels = map(self._sentence_to_labels, sentences)
+        return self._combine_with_labels(data, labels)
+
+    def predict_with_dropout(self, data: List[PreTokenizedText]) -> List[LabeledTokenizedText]:
+        sentences = list(map(self._tokenized_text_to_sentence, data))
+        self.tagger.train()
         self.tagger.predict(sentences)
 
         labels = map(self._sentence_to_labels, sentences)

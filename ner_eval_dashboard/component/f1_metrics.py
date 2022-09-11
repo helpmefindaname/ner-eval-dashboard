@@ -1,49 +1,23 @@
-from collections import defaultdict
-from typing import TYPE_CHECKING, Any, Dict, List, Sequence, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List
 
 from dash import html
 from dash.development.base_component import Component as DashComponent
 
 from ner_eval_dashboard.component import Component
-from ner_eval_dashboard.datamodels import (
-    DatasetType,
-    Label,
-    LabeledText,
-    LabeledTokenizedText,
-    SectionType,
-)
+from ner_eval_dashboard.datamodels import DatasetType, SectionType
 from ner_eval_dashboard.dataset import Dataset
 from ner_eval_dashboard.utils.dash import create_table_from_records
+from ner_eval_dashboard.utils.metrics import (
+    acc,
+    acc_dict,
+    compute_confusion_metrics_for_examples,
+    compute_type_confusion_metrics_for_examples,
+    f1_score,
+    f1_score_dict,
+)
 
 if TYPE_CHECKING:
     from ner_eval_dashboard.predictor import Predictor
-
-
-def f1_score(precision: float, recall: float) -> float:
-    if precision + recall == 0:
-        return 0
-    return 2 * precision * recall / (precision + recall)
-
-
-def acc(tp: int, n: int) -> float:
-    if tp + n == 0:
-        return 0
-    return tp / (tp + n)
-
-
-def acc_dict(tp: Dict[str, int], n: Dict[str, int], labels: List[str]) -> Dict[str, float]:
-    return {label: acc(tp[label], n[label]) for label in labels}
-
-
-def list_to_type_span_dict(labels: Sequence[Label]) -> Dict[str, List[Tuple[int, int]]]:
-    result: Dict[str, List[Tuple[int, int]]] = defaultdict(list)
-    for label in labels:
-        result[label.entity_type].append((label.start, label.end))
-    return result
-
-
-def f1_score_dict(precisions: Dict[str, float], recalls: Dict[str, float], label_names: List[str]) -> Dict[str, float]:
-    return {label: f1_score(recalls[label], precisions[label]) for label in label_names}
 
 
 def with_name(values: Dict[str, float], name: str) -> Dict[str, Any]:
@@ -112,90 +86,21 @@ class F1MetricComponent(Component):
     @classmethod
     def precompute(cls, predictor: "Predictor", dataset: Dataset) -> Dict[str, Any]:
         label_names = predictor.label_names
-        micro_tp = 0
-        micro_fp = 0
-        micro_fn = 0
-        overlap_tp = 0
-        overlap_fp = 0
-        overlap_fn = 0
-        type_tps = {n: 0 for n in label_names}
-        type_fps = {n: 0 for n in label_names}
-        type_fns = {n: 0 for n in label_names}
-        cls_tps = {n: 0 for n in label_names}
-        cls_fps = {n: 0 for n in label_names}
-        cls_fns = {n: 0 for n in label_names}
-
         predictions = predictor.predict(dataset.test_tokenized)
-        predictions_per_id: Dict[int, LabeledTokenizedText] = {pred.dataset_text_id: pred for pred in predictions}
-        labels_per_id: Dict[int, LabeledText] = {label.dataset_text_id: label for label in dataset.test}
-        assert sorted(predictions_per_id.keys()) == sorted(labels_per_id.keys())
 
-        for text_id in predictions_per_id.keys():
-            text_labels = labels_per_id[text_id].labels
-            text_predictions = predictions_per_id[text_id].labels
-
-            text_label_spans = {(label.start, label.end): label.entity_type for label in text_labels}
-            text_prediction_spans = {(label.start, label.end): label.entity_type for label in text_predictions}
-            for span in set(list(text_label_spans.keys()) + list(text_prediction_spans.keys())):
-                if span not in text_label_spans:
-                    overlap_fp += 1
-                    micro_fp += 1
-                    cls_fps[text_prediction_spans[span]] += 1
-                if span not in text_prediction_spans:
-                    overlap_fn += 1
-                    micro_fn += 1
-                    cls_fns[text_label_spans[span]] += 1
-                if span in text_label_spans and span in text_prediction_spans:
-                    overlap_tp += 1
-                    if text_prediction_spans[span] == text_label_spans[span]:
-                        micro_tp += 1
-                        cls_tps[text_prediction_spans[span]] += 1
-                    else:
-                        micro_fp += 1
-                        micro_fn += 1
-                        cls_fps[text_prediction_spans[span]] += 1
-                        cls_fns[text_label_spans[span]] += 1
-            label_dict = list_to_type_span_dict(text_labels)
-            predictions_dict = list_to_type_span_dict(text_predictions)
-            for label_name in label_names:
-                label_spans = label_dict[label_name]
-                prediction_spans = predictions_dict[label_name]
-
-                i = 0
-                j = 0
-                while i < len(label_spans) and j < len(prediction_spans):
-                    label_start, label_end = label_spans[i]
-                    pred_start, pred_end = prediction_spans[j]
-                    if label_start < pred_end and pred_start < label_end:
-                        type_tps[label_name] += 1
-                        i += 1
-                        j += 1
-                        continue
-
-                    if label_start < pred_start:
-                        type_fns[label_name] += 1
-                        i += 1
-                    else:
-                        type_fps[label_name] += 1
-                        j += 1
-
-                while i < len(label_spans):
-                    i += 1
-                    type_fns[label_name] += 1
-                while j < len(prediction_spans):
-                    j += 1
-                    type_fps[label_name] += 1
+        confusion_scores = compute_confusion_metrics_for_examples(predictions, dataset.test)
+        type_scores = compute_type_confusion_metrics_for_examples(predictions, dataset.test, label_names)
 
         return dict(
             label_names=label_names,
-            recalls=acc_dict(cls_tps, cls_fns, label_names),
-            precisions=acc_dict(cls_tps, cls_fps, label_names),
-            type_recalls=acc_dict(type_tps, type_fns, label_names),
-            type_precisions=acc_dict(type_tps, type_fps, label_names),
-            overlap_recall=acc(overlap_tp, overlap_fn),
-            overlap_precision=acc(overlap_tp, overlap_fp),
-            micro_recall=acc(micro_tp, micro_fn),
-            micro_precision=acc(micro_tp, micro_fp),
+            recalls=acc_dict(confusion_scores.cls_tps, confusion_scores.cls_fns, label_names),
+            precisions=acc_dict(confusion_scores.cls_tps, confusion_scores.cls_fps, label_names),
+            type_recalls=acc_dict(type_scores.type_tps, type_scores.type_fns, label_names),
+            type_precisions=acc_dict(type_scores.type_tps, type_scores.type_fps, label_names),
+            overlap_recall=acc(confusion_scores.overlap_tp, confusion_scores.overlap_fn),
+            overlap_precision=acc(confusion_scores.overlap_tp, confusion_scores.overlap_fp),
+            micro_recall=acc(confusion_scores.micro_tp, confusion_scores.micro_fn),
+            micro_precision=acc(confusion_scores.micro_tp, confusion_scores.micro_fp),
         )
 
     def to_dash_components(self) -> List[DashComponent]:

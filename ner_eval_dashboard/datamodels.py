@@ -1,9 +1,18 @@
-from collections import namedtuple
+from collections import defaultdict, namedtuple
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, DefaultDict, Dict, List, Optional
 
 import pydantic
 from pydantic import BaseModel
+
+
+def default_dict_add(a: Dict[str, int], b: Dict[str, int]) -> DefaultDict[str, int]:
+    r: DefaultDict[str, int] = defaultdict(int)
+    for k, v in a.items():
+        r[k] += v
+    for k, v in b.items():
+        r[k] += v
+    return r
 
 
 class DatasetType(str, Enum):
@@ -17,6 +26,7 @@ class SectionType(str, Enum):
     BASIC_METRICS = "basic_metrics"
     EXAMPLES = "examples"
     DETAILED_METRICS = "detailed_metrics"
+    ROBUSTNESS = "robustness"
 
 
 class BaseElement(BaseModel):
@@ -217,6 +227,46 @@ class ErrorSpan(BaseModel):
 
 class PredictionErrorSpans(BaseElement):
     spans: List[ErrorSpan]
+
+
+class ConfusionScores(BaseModel):
+    micro_tp: int = 0
+    micro_fp: int = 0
+    micro_fn: int = 0
+    cls_tps: Dict[str, int] = defaultdict(int)
+    cls_fps: Dict[str, int] = defaultdict(int)
+    cls_fns: Dict[str, int] = defaultdict(int)
+    overlap_tp: int = 0
+    overlap_fp: int = 0
+    overlap_fn: int = 0
+
+    def __add__(self, other: "ConfusionScores") -> "ConfusionScores":
+        self.cls_tps = default_dict_add(self.cls_tps, other.cls_tps)
+        self.cls_fps = default_dict_add(self.cls_fps, other.cls_fps)
+        self.cls_fns = default_dict_add(self.cls_fns, other.cls_fns)
+
+        self.micro_tp += other.micro_tp
+        self.micro_fp += other.micro_fp
+        self.micro_fn += other.micro_fn
+
+        self.overlap_tp += other.overlap_tp
+        self.overlap_fp += other.overlap_fp
+        self.overlap_fn += other.overlap_fn
+
+        return self
+
+
+class TypeConfusionScores(BaseModel):
+    type_tps: Dict[str, int] = defaultdict(int)
+    type_fps: Dict[str, int] = defaultdict(int)
+    type_fns: Dict[str, int] = defaultdict(int)
+
+    def __add__(self, other: "TypeConfusionScores") -> "TypeConfusionScores":
+        self.type_tps = default_dict_add(self.type_tps, other.type_tps)
+        self.type_fps = default_dict_add(self.type_fps, other.type_fps)
+        self.type_fns = default_dict_add(self.type_fns, other.type_fns)
+
+        return self
 
 
 Callback = namedtuple("Callback", ["inputs", "output", "function"])
