@@ -3,6 +3,9 @@ import inspect
 import logging
 from pathlib import Path
 
+from gevent.pywsgi import WSGIServer
+from loguru import logger
+
 from ner_eval_dashboard.app import create_app
 from ner_eval_dashboard.dataset import Dataset
 from ner_eval_dashboard.predictor import Predictor
@@ -100,8 +103,10 @@ def main() -> None:
     tokenizer = load_tokenizer(args)
     dataset = load_dataset(tokenizer, args)
     app = create_app(__name__, predictor, dataset, args.use, args.exclude)
-
-    app.run()
+    app.enable_dev_tools(debug=False)
+    http_server = WSGIServer(("127.0.0.1", 8050), app.server)
+    logger.info(f"Starting server on {http_server.server_host}:{http_server.server_port}")
+    http_server.serve_forever()
 
 
 if __name__ == "__main__":

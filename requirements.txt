@@ -4,3 +4,4 @@ dash
 dash_bootstrap_components
 loguru
 explainaboard
+gevent
