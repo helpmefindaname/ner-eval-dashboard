@@ -42,14 +42,14 @@ class PerTokenStats(Component):
         self.token_header = [
             {"name": "Token", "id": "token"},
             {"name": "Token count", "id": "count"},
-            {"name": "Loss mean", "id": "mean", "format": "{:.2}"},
-            {"name": "Loss Sum", "id": "sum", "format": "{:.2}"},
+            {"name": "Loss mean", "id": "mean", "format": "{:.2f}"},
+            {"name": "Loss Sum", "id": "sum", "format": "{:.2f}"},
         ]
         self.tag_header = [
             {"name": "Tag", "id": "tag"},
             {"name": "Tag count", "id": "count"},
-            {"name": "Loss mean", "id": "mean", "format": "{:.2}"},
-            {"name": "Loss Sum", "id": "sum", "format": "{:.2}"},
+            {"name": "Loss mean", "id": "mean", "format": "{:.2f}"},
+            {"name": "Loss Sum", "id": "sum", "format": "{:.2f}"},
         ]
 
     @classmethod
@@ -111,6 +111,7 @@ class PerTokenStats(Component):
             self.tag_header,
             self.tag_statistics,
             caption="Tag statistics",
+            page_size=20,
         )
         token_table, token_callback = paginated_table(
             f"{self.component_name}-token",
