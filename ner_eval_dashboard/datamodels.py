@@ -197,6 +197,15 @@ class ScoredToken(Token):
     class Config:
         frozen = True
 
+    def get_score_by_tag(self, tag: str) -> float:
+        for label in self.scored_labels:
+            if label.tag == tag:
+                return label.score
+        return 0
+
+    def best(self) -> ScoredLabel:
+        return max(self.scored_labels, key=lambda s: s.score)
+
 
 class ScoredTokenizedText(BaseElement):
     tokens: List[ScoredToken]

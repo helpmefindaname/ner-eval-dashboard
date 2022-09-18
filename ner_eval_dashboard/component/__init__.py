@@ -7,6 +7,7 @@ from ner_eval_dashboard.component.examples import (
     ValidationExamplesComponent,
 )
 from ner_eval_dashboard.component.explainaboard import ExplainaboardComponent
+from ner_eval_dashboard.component.per_token_stats import PerTokenStats
 from ner_eval_dashboard.component.f1_metrics import F1MetricComponent
 
 __all__ = [
@@ -18,4 +19,6 @@ __all__ = [
     "ValidationExamplesComponent",
     "TestExamplesComponent",
     "UnlabeledPredictionExamplesComponent",
+    "PerTokenStats",
 ]
+

@@ -57,7 +57,7 @@ class FlairPredictor(ScoredTokenPredictorMixin, DropoutPredictorMixin, Predictor
         return self._label_names
 
     @property
-    def token_label_names(self) -> List[str]:
+    def tag_label_names(self) -> List[str]:
         return sorted(self.tagger.label_dictionary.get_items())
 
     def predict(self, data: List[PreTokenizedText]) -> List[LabeledTokenizedText]:
