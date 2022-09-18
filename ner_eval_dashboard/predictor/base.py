@@ -65,11 +65,3 @@ class Predictor(abc.ABC, RegisterMixin):
             )
             for text, label in zip(data, labels)
         ]
-
-
-class PredictorMixin:
-    def add_component(self, component: Type["Component"]) -> None:
-        super_obj = super(self)
-        add_fn = getattr(super_obj, "add_component", None)
-        if add_fn is not None:
-            add_fn(component)

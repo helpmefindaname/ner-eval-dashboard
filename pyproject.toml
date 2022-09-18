@@ -8,6 +8,7 @@ flake8-ignore = ["E203", "W503"]  # See https://github.com/PyCQA/pycodestyle/iss
 addopts = "--flake8 --mypy --isort -n auto"
 filterwarnings = [
     "error",
+    "ignore:The 'warn' method is deprecated, use 'warning' instead:DeprecationWarning",  # transformers>=4.22.1 should fix it
     "ignore:Please use `triu` from the `scipy:DeprecationWarning",  # gensim needs an update
     "ignore:`cached_download`",  # flair 0.12+ should solve this.
     "ignore:SelectableGroups dict interface is deprecated. Use select.",  # deprecations on python 3.10

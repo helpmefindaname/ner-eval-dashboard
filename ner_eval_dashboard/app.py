@@ -56,6 +56,7 @@ def create_app(
         title=f"Ner-Eval-Dashboard for {predictor.name} on {dataset.name}",
         external_stylesheets=[dbc.themes.BOOTSTRAP],
     )
+    app.logger.removeHandler(app.logger.handlers[-1])
 
     component_cls = __filter_components(
         predictor.components,

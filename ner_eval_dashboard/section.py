@@ -48,6 +48,13 @@ def create_sections() -> Dict[SectionType, Section]:
         "More detailed evaluations that show the inner working of the model.",
         sections,
     )
+    Section(
+        SectionType.ROBUSTNESS,
+        "Robustness Metrics",
+        "Metrics to track the Robustness of the Predictor. Robustness has only a vague definition. "
+        "It is about checking how good the model is when minimal changes are added.",
+        sections,
+    )
 
     return sections
 
