@@ -79,7 +79,7 @@ class FlairPredictor(ScoredTokenPredictorMixin, DropoutPredictorMixin, Predictor
     def predict_token_scores(self, data: List[PreTokenizedText]) -> List[ScoredTokenizedText]:
         sentences = list(map(self._tokenized_text_to_sentence, data))
         self.tagger.eval()
-        self.tagger.predict(sentences)
+        self.tagger.predict(sentences, return_probabilities_for_all_classes=True)
 
         scores = map(self._sentence_to_scores, sentences)
         return self._combine_with_scores(data, scores)
