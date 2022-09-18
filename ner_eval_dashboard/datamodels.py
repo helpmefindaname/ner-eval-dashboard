@@ -1,6 +1,6 @@
 from collections import defaultdict, namedtuple
 from enum import Enum
-from typing import Any, DefaultDict, Dict, List, Optional
+from typing import Any, DefaultDict, Dict, List, Literal, Optional
 
 import pydantic
 from pydantic import BaseModel
@@ -107,24 +107,35 @@ class TokenLabeledText(BaseElement):
         frozen = True
 
     @classmethod
-    def from_labeled_tokenized_text(cls, labeled_tokenized_text: LabeledTokenizedText) -> "TokenLabeledText":
+    def from_labeled_tokenized_text(
+        cls,
+        labeled_tokenized_text: LabeledTokenizedText,
+        tag_format: Literal["BIO", "BIOES", "BILOU"] = "BIO",
+    ) -> "TokenLabeledText":
         current_label: Optional[Label] = None
         labels = iter(labeled_tokenized_text.labels)
         next_label = next(labels, None)
         labeled_tokens = []
         for token in labeled_tokenized_text.tokens:
-            if current_label is not None and token.end >= current_label.end:
+            if current_label is not None and token.end <= current_label.end:
+                middle_or_end_tag = "I"
+                if token.end == current_label.end:
+                    if tag_format == "BIOES":
+                        middle_or_end_tag = "E"
+                    if tag_format == "BILOU":
+                        middle_or_end_tag = "L"
+
                 labeled_tokens.append(
                     Label.construct(
                         text=token.text,
-                        entity_type=f"I-{current_label.entity_type}",
+                        entity_type=f"{middle_or_end_tag}-{current_label.entity_type}",
                         start=token.start,
                         end=token.end,
                     )
                 )
                 continue
             current_label = None
-            if next_label is None or next_label.start > next_label.end:
+            if next_label is None or next_label.start > token.end:
                 labeled_tokens.append(
                     Label.construct(
                         text=token.text,
@@ -135,9 +146,18 @@ class TokenLabeledText(BaseElement):
                 )
                 continue
             current_label = next_label
+            start_tag = "B"
+            if current_label.end <= token.end:
+                if tag_format == "BIOES":
+                    start_tag = "S"
+                if tag_format == "BILOU":
+                    start_tag = "U"
             labeled_tokens.append(
                 Label.construct(
-                    text=token.text, entity_type=f"B-{current_label.entity_type}", start=token.start, end=token.end
+                    text=token.text,
+                    entity_type=f"{start_tag}-{current_label.entity_type}",
+                    start=token.start,
+                    end=token.end,
                 )
             )
             next_label = next(labels, None)

@@ -6,6 +6,7 @@ target-version = ['py310']
 flake8-max-line-length = 120
 flake8-ignore = ["E203", "W503"]  # See https://github.com/PyCQA/pycodestyle/issues/373
 addopts = "--flake8 --mypy --isort -n auto"
+markers = ["debug"]
 filterwarnings = [
     "error",
     "ignore:The 'warn' method is deprecated, use 'warning' instead:DeprecationWarning",  # transformers>=4.22.1 should fix it

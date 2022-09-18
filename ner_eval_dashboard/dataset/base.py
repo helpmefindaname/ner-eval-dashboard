@@ -1,4 +1,4 @@
-from typing import Callable, Iterator, List, Sequence, Set, Tuple
+from typing import Callable, Iterator, List, Literal, Sequence, Set, Tuple
 
 from pydantic import BaseModel
 
@@ -144,8 +144,7 @@ class Dataset(RegisterMixin):
     def unlabeled_tokenized(self) -> List[PreTokenizedText]:
         return self.tokenizer.tokenize_seq(self._unlabeled)
 
-    @property
-    def test_token_labeled(self) -> List[TokenLabeledText]:
+    def get_test_token_labeled(self, tag_format: Literal["BIO", "BIOES", "BILOU"] = "BIO") -> List[TokenLabeledText]:
         return [
             TokenLabeledText.from_labeled_tokenized_text(
                 LabeledTokenizedText.construct(
@@ -153,7 +152,8 @@ class Dataset(RegisterMixin):
                     dataset_text_id=tokenized.dataset_text_id,
                     dataset_type=tokenized.dataset_type,
                     labels=labeled.labels,
-                )
+                ),
+                tag_format=tag_format,
             )
             for tokenized, labeled in zip(self.test_tokenized, self._test)
         ]
@@ -196,6 +196,7 @@ class Dataset(RegisterMixin):
                     current_tokens = []
                     is_span = False
                 if token_label.entity_type[0] == "B":
+                    assert not is_span
                     is_span = True
                     current_tokens.append(token_label)
 

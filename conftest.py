@@ -40,9 +40,22 @@ def test_snapshots(gen_snapshots: bool) -> Callable[[Dict[str, Any], Path], None
 
 def pytest_addoption(parser: Any) -> None:
     parser.addoption("--gen-snapshots", action="store_true", help="recreates outputs instead of testing")
+    parser.addoption(
+        "--run-debug-tests",
+        action="store_true",
+        help="run tests that are only used for debugging",
+    )
 
 
 def pytest_generate_tests(metafunc: Any) -> None:
     option_value = metafunc.config.option.gen_snapshots
     if "gen_snapshots" in metafunc.fixturenames and option_value is not None:
         metafunc.parametrize("gen_snapshots", [option_value])
+
+
+def pytest_collection_modifyitems(config: Any, items: Any) -> None:
+    if not config.getoption("--run-debug-tests"):
+        skip_integration = pytest.mark.skip(reason="need --run-debug-tests option to run")
+        for item in items:
+            if "debug" in item.keywords:
+                item.add_marker(skip_integration)
