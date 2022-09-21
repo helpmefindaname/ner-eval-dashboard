@@ -37,6 +37,7 @@ class ScoredTokenPredictorMixin(PredictorMixin):
         super(ScoredTokenPredictorMixin, self).__init__(*args, **kwargs)
 
         from ner_eval_dashboard.component import PerTokenStats
+
         self.add_component(PerTokenStats)
 
     @property
