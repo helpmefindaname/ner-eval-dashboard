@@ -9,7 +9,14 @@ from ner_eval_dashboard.component import (
     UnlabeledPredictionExamplesComponent,
     ValidationExamplesComponent,
 )
-from ner_eval_dashboard.datamodels import Label, LabeledTokenizedText, PreTokenizedText
+from ner_eval_dashboard.datamodels import (
+    Label,
+    LabeledTokenizedText,
+    PreTokenizedText,
+    ScoredLabel,
+    ScoredToken,
+    ScoredTokenizedText,
+)
 from ner_eval_dashboard.utils import RegisterMixin, setup_register
 from ner_eval_dashboard.utils.hash import json_hash
 
@@ -64,4 +71,25 @@ class Predictor(abc.ABC, RegisterMixin):
                 labels=label,
             )
             for text, label in zip(data, labels)
+        ]
+
+    @staticmethod
+    def _combine_with_scores(
+        data: Iterable[PreTokenizedText], data_scores: Iterable[List[List[ScoredLabel]]]
+    ) -> List[ScoredTokenizedText]:
+        return [
+            ScoredTokenizedText.construct(
+                tokens=[
+                    ScoredToken.construct(
+                        start=token.start,
+                        end=token.end,
+                        text=token.text,
+                        scored_labels=token_scores,
+                    )
+                    for token, token_scores in zip(text.tokens, scores)
+                ],
+                dataset_type=text.dataset_type,
+                dataset_text_id=text.dataset_text_id,
+            )
+            for text, scores in zip(data, data_scores)
         ]

@@ -81,7 +81,7 @@ class ExplainaboardComponent(Component):
         os.environ["EXPLAINABOARD_CACHE"] = str(cache_root / "explainaboard")
         predictions = predictor.predict(dataset.test_tokenized)
         token_predictions = [TokenLabeledText.from_labeled_tokenized_text(pred) for pred in predictions]
-        token_labels = dataset.test_token_labeled
+        token_labels = dataset.get_test_token_labeled()
         sys_output = FileLoaderReturn(
             [
                 {
