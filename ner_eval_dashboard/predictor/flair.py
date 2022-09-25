@@ -23,7 +23,7 @@ from ner_eval_dashboard.predictor_mixins import (
 @Predictor.register("FLAIR")
 class FlairPredictor(ScoredTokenPredictorMixin, DropoutPredictorMixin, Predictor):
     def __init__(self, name_or_path: str):
-        super(FlairPredictor, self).__init__()
+        super().__init__()
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", FutureWarning)
             self.tagger: SequenceTagger = SequenceTagger.load(name_or_path)

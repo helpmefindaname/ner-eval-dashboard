@@ -34,7 +34,7 @@ class PerTokenStats(Component):
         token_statistics: List[Dict[str, Any]],
         tag_statistics: List[Dict[str, Any]],
     ) -> None:
-        super(PerTokenStats, self).__init__()
+        super().__init__()
         self.tag_label_names = tag_label_names
         self.token_statistics = token_statistics
         self.tag_statistics = tag_statistics

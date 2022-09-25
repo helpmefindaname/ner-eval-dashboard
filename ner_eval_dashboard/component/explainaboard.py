@@ -32,7 +32,7 @@ class ExplainaboardComponent(Component):
         self.high_confidence_f1 = results["overall"]["F1"]["confidence_score_high"]
         self.fine_grained = results["fine_grained"]
 
-        super(ExplainaboardComponent, self).__init__()
+        super().__init__()
 
     @classmethod
     def precompute_train_features(self, dataset: Dataset, processor: NERProcessor) -> Dict[str, Any]:

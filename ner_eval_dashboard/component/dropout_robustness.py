@@ -59,7 +59,7 @@ class DropoutRobustnessComponent(Component):
             {"name": "Max", "id": "max", "format": "{:.2%}"},
         ]
 
-        super(DropoutRobustnessComponent, self).__init__()
+        super().__init__()
 
     @classmethod
     def precompute(cls, predictor: "Predictor", dataset: Dataset) -> Dict[str, Any]:
