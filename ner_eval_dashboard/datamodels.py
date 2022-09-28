@@ -78,6 +78,22 @@ class PreTokenizedText(BaseElement):
     class Config:
         frozen = True
 
+    @classmethod
+    def from_tokens(cls, words: List[str], text_id: int) -> "PreTokenizedText":
+        start = 0
+        tokens: List[Token] = []
+        for word in words:
+            end = start + len(word)
+            tokens.append(
+                Token.construct(
+                    start=start,
+                    end=end,
+                    text=word,
+                )
+            )
+            start = end + 1
+        return PreTokenizedText(tokens=tokens, dataset_type=DatasetType.UNLABELED, dataset_text_id=text_id)
+
 
 class Text(BaseElement):
     text: str

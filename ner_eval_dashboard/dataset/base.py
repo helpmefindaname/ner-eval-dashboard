@@ -144,7 +144,12 @@ class Dataset(RegisterMixin):
     def unlabeled_tokenized(self) -> List[PreTokenizedText]:
         return self.tokenizer.tokenize_seq(self._unlabeled)
 
-    def get_test_token_labeled(self, tag_format: Literal["BIO", "BIOES", "BILOU"] = "BIO") -> List[TokenLabeledText]:
+    @staticmethod
+    def _get_token_labeled_text(
+        tokenized_examples: List[PreTokenizedText],
+        labeled_examples: List[LabeledText],
+        tag_format: Literal["BIO", "BIOES", "BILOU"] = "BIO",
+    ) -> List[TokenLabeledText]:
         return [
             TokenLabeledText.from_labeled_tokenized_text(
                 LabeledTokenizedText.construct(
@@ -155,22 +160,17 @@ class Dataset(RegisterMixin):
                 ),
                 tag_format=tag_format,
             )
-            for tokenized, labeled in zip(self.test_tokenized, self._test)
+            for tokenized, labeled in zip(tokenized_examples, labeled_examples)
         ]
 
-    @property
-    def train_token_labeled(self) -> List[TokenLabeledText]:
-        return [
-            TokenLabeledText.from_labeled_tokenized_text(
-                LabeledTokenizedText.construct(
-                    tokens=tokenized.tokens,
-                    dataset_text_id=tokenized.dataset_text_id,
-                    dataset_type=tokenized.dataset_type,
-                    labels=labeled.labels,
-                )
-            )
-            for tokenized, labeled in zip(self.train_tokenized, self._train)
-        ]
+    def get_train_token_labeled(self, tag_format: Literal["BIO", "BIOES", "BILOU"] = "BIO") -> List[TokenLabeledText]:
+        return self._get_token_labeled_text(self.train_tokenized, self._train, tag_format)
+
+    def get_val_token_labeled(self, tag_format: Literal["BIO", "BIOES", "BILOU"] = "BIO") -> List[TokenLabeledText]:
+        return self._get_token_labeled_text(self.val_tokenized, self._val, tag_format)
+
+    def get_test_token_labeled(self, tag_format: Literal["BIO", "BIOES", "BILOU"] = "BIO") -> List[TokenLabeledText]:
+        return self._get_token_labeled_text(self.test_tokenized, self._test, tag_format)
 
     def add_unlabeled(self, texts: Sequence[str]) -> None:
         start_id = len(self._unlabeled)

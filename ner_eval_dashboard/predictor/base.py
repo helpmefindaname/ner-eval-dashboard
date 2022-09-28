@@ -7,7 +7,7 @@ from ner_eval_dashboard.component import (
     TestExamplesComponent,
     TrainingExamplesComponent,
     UnlabeledPredictionExamplesComponent,
-    ValidationExamplesComponent,
+    ValidationExamplesComponent, TextFlintComponent,
 )
 from ner_eval_dashboard.datamodels import (
     Label,
@@ -34,6 +34,7 @@ class Predictor(abc.ABC, RegisterMixin):
         self.add_component(TestExamplesComponent)
         self.add_component(UnlabeledPredictionExamplesComponent)
         self.add_component(ExplainaboardComponent)
+        self.add_component(TextFlintComponent)
 
     def add_component(self, component: Type["Component"]) -> None:
         self.components.append(component)

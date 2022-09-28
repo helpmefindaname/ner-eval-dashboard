@@ -5,3 +5,4 @@ dash_bootstrap_components
 loguru
 explainaboard
 gevent
+textflint @ git+ssh://git@github.com/helpmefindaname/textflint@v0.1.1#egg=text-flint
