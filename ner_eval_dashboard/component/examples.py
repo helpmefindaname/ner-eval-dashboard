@@ -253,7 +253,7 @@ class PredictionErrorComponent(Component, abc.ABC):
 
     def to_dash_components(self) -> List[DashComponent]:
         caption = self.table_caption()
-        table, callback = paginated_table(
+        table = paginated_table(
             self.component_name,
             [{"name": "Text Id", "id": "id"}, {"name": caption, "id": "ex"}],
             [
@@ -265,8 +265,6 @@ class PredictionErrorComponent(Component, abc.ABC):
             ],
             caption=caption,
         )
-
-        self._callbacks.append(callback)
 
         return table
 
@@ -330,7 +328,7 @@ class UnlabeledPredictionExamplesComponent(Component, abc.ABC):
 
     def to_dash_components(self) -> List[DashComponent]:
         caption = "Unlabeled Prediction Examples"
-        table, callback = paginated_table(
+        table = paginated_table(
             self.component_name,
             [{"name": "Text Id", "id": "id"}, {"name": caption, "id": "ex"}],
             [
@@ -342,8 +340,6 @@ class UnlabeledPredictionExamplesComponent(Component, abc.ABC):
             ],
             caption=caption,
         )
-
-        self._callbacks.append(callback)
 
         return table
 

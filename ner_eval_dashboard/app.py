@@ -73,8 +73,4 @@ def create_app(
 
     app.layout = create_base_layout(dash_sections, predictor, dataset)
 
-    for comp in created_components:
-        for callback in comp.callbacks:
-            app.callback(callback.output, callback.inputs)(callback.function)
-
     return app

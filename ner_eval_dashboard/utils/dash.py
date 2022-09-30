@@ -1,11 +1,10 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
 
 import dash_bootstrap_components as dbc
-from dash import Input, Output, html
+from dash import Input, Output, callback, html
 from dash.development.base_component import Component
 
 from ner_eval_dashboard.datamodels import (
-    Callback,
     ErrorSpan,
     ErrorType,
     LabeledText,
@@ -36,12 +35,13 @@ def create_table_from_records(header: List[Dict[str, Any]], content: List[Dict[s
 
 def paginated_table(
     component_id: str, header: List[Dict[str, Any]], content: List[Dict[str, Any]], caption: str, page_size: int = 10
-) -> Tuple[Component, Callback]:
+) -> Component:
     rows = [html.Tr(children=[__format_component(h, row) for h in header]) for row in content]
     page_count = (len(rows) + page_size - 1) // page_size
     pagination_id = f"{component_id}-table-pagination"
     content_id = f"{component_id}-table-body"
 
+    @callback([Input(pagination_id, "active_page")], Output(content_id, "children"))
     def update_page(page: Optional[int]) -> List[html.Tr]:
         if page is None:
             return rows[:page_size]
@@ -65,7 +65,7 @@ def paginated_table(
                 previous_next=True,
             ),
         ]
-    ), Callback([Input(pagination_id, "active_page")], Output(content_id, "children"), update_page)
+    )
 
 
 def prediction_view(component_id: str, prediction_text: LabeledTokenizedText, labels: List[str]) -> Component:
