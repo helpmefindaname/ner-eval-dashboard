@@ -5,9 +5,10 @@ from ner_eval_dashboard.component import (
     ExplainaboardComponent,
     F1MetricComponent,
     TestExamplesComponent,
+    TextFlintComponent,
     TrainingExamplesComponent,
     UnlabeledPredictionExamplesComponent,
-    ValidationExamplesComponent, TextFlintComponent,
+    ValidationExamplesComponent,
 )
 from ner_eval_dashboard.datamodels import (
     Label,

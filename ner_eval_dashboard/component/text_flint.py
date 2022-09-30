@@ -1,9 +1,7 @@
 import tempfile
-from typing import TYPE_CHECKING, Any, Dict, List, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List
 
 import nltk
-import pandas as pd
-import plotly.express as px
 from dash import dcc, html
 from dash.development.base_component import Component as DashComponent
 from textflint import Config
@@ -14,7 +12,12 @@ from textflint.report.analyzer import Analyzer
 from textflint.report.report_generator import ReportGenerator
 
 from ner_eval_dashboard.component import Component
-from ner_eval_dashboard.datamodels import DatasetType, PreTokenizedText, SectionType, TokenLabeledText
+from ner_eval_dashboard.datamodels import (
+    DatasetType,
+    PreTokenizedText,
+    SectionType,
+    TokenLabeledText,
+)
 from ner_eval_dashboard.dataset import Dataset
 
 if TYPE_CHECKING:
@@ -22,21 +25,18 @@ if TYPE_CHECKING:
 
 
 class PredictorTextFlintWrapper(FlintModelNER):
-    def __init__(self, predictor: "Predictor"):
+    def __init__(self, predictor: "Predictor") -> None:
         self.predictor = predictor
         super().__init__(self)
 
-    def __call__(self, *inputs):
-        breakpoint()
-        pass
+    def __call__(self, *inputs: Any) -> Any:
+        raise NotImplementedError()
 
-    def get_model_grad(self, *inputs):
-        breakpoint()
-        pass
+    def get_model_grad(self, *inputs: Any) -> Any:
+        raise NotImplementedError()
 
-    def unzip_samples(self, data_samples):
-        breakpoint()
-        pass
+    def unzip_samples(self, data_samples: Any) -> Any:
+        raise NotImplementedError()
 
     def predict_tags_from_words(self, word_sequences: List[List[str]], batch_size: int = -1) -> List[List[str]]:
         pre_tokenized_texts = [
@@ -63,13 +63,15 @@ class TextFlintComponent(Component):
         self.subpopulation = subpopulation
         self.linguist_radar = Analyzer.json_to_linguistic_radar({"transformation": self.transformation})
         self.sunburst_df, self.sunburst_settings = Analyzer.json_to_sunburst({"transformation": self.transformation})
-        self.bar_df, self.bar_cols = Analyzer.json_to_bar_chart({
-            "transformation": self.transformation,
-            "subpopulation": self.subpopulation,
-        })
+        self.bar_df, self.bar_cols = Analyzer.json_to_bar_chart(
+            {
+                "transformation": self.transformation,
+                "subpopulation": self.subpopulation,
+            }
+        )
 
     @staticmethod
-    def init_nltk():
+    def init_nltk() -> None:
         try:
             nltk.data.find("taggers/averaged_perceptron_tagger/averaged_perceptron_tagger.pickle")
         except (LookupError, OSError):
