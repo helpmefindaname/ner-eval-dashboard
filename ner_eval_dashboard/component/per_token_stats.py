@@ -106,22 +106,19 @@ class PerTokenStats(Component):
         )
 
     def to_dash_components(self) -> List[DashComponent]:
-        tag_table, tag_callback = paginated_table(
+        tag_table = paginated_table(
             f"{self.component_name}-tag",
             self.tag_header,
             self.tag_statistics,
             caption="Tag statistics",
             page_size=20,
         )
-        token_table, token_callback = paginated_table(
+        token_table = paginated_table(
             f"{self.component_name}-token",
             self.token_header,
             self.token_statistics,
             caption="Token statistics",
         )
-
-        self._callbacks.append(tag_callback)
-        self._callbacks.append(token_callback)
 
         return [
             tag_table,

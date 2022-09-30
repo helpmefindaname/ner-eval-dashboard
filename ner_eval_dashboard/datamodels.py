@@ -1,4 +1,4 @@
-from collections import defaultdict, namedtuple
+from collections import defaultdict
 from enum import Enum
 from typing import Any, DefaultDict, Dict, List, Literal, Optional
 
@@ -312,6 +312,3 @@ class TypeConfusionScores(BaseModel):
         self.type_fns = default_dict_add(self.type_fns, other.type_fns)
 
         return self
-
-
-Callback = namedtuple("Callback", ["inputs", "output", "function"])
