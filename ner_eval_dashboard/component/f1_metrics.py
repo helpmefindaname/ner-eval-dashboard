@@ -81,7 +81,7 @@ class F1MetricComponent(Component):
             {"name": "value", "id": "value", "format": "{:.2%}"},
         ]
 
-        super(F1MetricComponent, self).__init__()
+        super().__init__()
 
     @classmethod
     def precompute(cls, predictor: "Predictor", dataset: Dataset) -> Dict[str, Any]:

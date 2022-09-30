@@ -219,7 +219,7 @@ def create_prediction_error_span(prediction_label_text: LabelPredictionText) -> 
 class PredictionErrorComponent(Component, abc.ABC):
     def __init__(self, examples: List[str]) -> None:
         self.examples = [PredictionErrorSpans.parse_raw(ex) for ex in examples]
-        super(PredictionErrorComponent, self).__init__()
+        super().__init__()
 
     @classmethod
     @abc.abstractmethod
@@ -319,7 +319,7 @@ class UnlabeledPredictionExamplesComponent(Component, abc.ABC):
     def __init__(self, examples: List[str], labels: List[str]) -> None:
         self.examples = [LabeledTokenizedText.parse_raw(ex) for ex in examples]
         self.labels = labels
-        super(UnlabeledPredictionExamplesComponent, self).__init__()
+        super().__init__()
 
     @classmethod
     def precompute(cls, predictor: "Predictor", dataset: Dataset) -> Dict[str, Any]:

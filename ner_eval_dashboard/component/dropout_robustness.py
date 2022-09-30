@@ -59,7 +59,7 @@ class DropoutRobustnessComponent(Component):
             {"name": "Max", "id": "max", "format": "{:.2%}"},
         ]
 
-        super(DropoutRobustnessComponent, self).__init__()
+        super().__init__()
 
     @classmethod
     def precompute(cls, predictor: "Predictor", dataset: Dataset) -> Dict[str, Any]:
@@ -91,10 +91,6 @@ class DropoutRobustnessComponent(Component):
 
     def to_dash_components(self) -> List[DashComponent]:
         return [
-            html.P(
-                "Notice: this metrics depends on the amount of dropout used in the specific Predictor. "
-                "Therefore it can heavily vary in different architectures."
-            ),
             html.Div(
                 [
                     create_table_from_records(
@@ -104,6 +100,10 @@ class DropoutRobustnessComponent(Component):
                     ),
                 ],
                 className="col-md-12 col-sm-12",
+            ),
+            html.P(
+                "Notice: this metrics depends on the amount of dropout used in the specific Predictor. "
+                "Therefore it can heavily vary in different architectures."
             ),
         ]
 

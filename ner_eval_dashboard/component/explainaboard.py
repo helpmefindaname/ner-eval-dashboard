@@ -32,7 +32,7 @@ class ExplainaboardComponent(Component):
         self.high_confidence_f1 = results["overall"]["F1"]["confidence_score_high"]
         self.fine_grained = results["fine_grained"]
 
-        super(ExplainaboardComponent, self).__init__()
+        super().__init__()
 
     @classmethod
     def precompute_train_features(self, dataset: Dataset, processor: NERProcessor) -> Dict[str, Any]:
@@ -41,7 +41,7 @@ class ExplainaboardComponent(Component):
 
         vocab: Dict[str, int] = defaultdict(int)
         tag_vocab: Dict[str, int] = defaultdict(int)
-        for sample in dataset.train_token_labeled:
+        for sample in dataset.get_train_token_labeled():
             tokens = [t.text for t in sample.tokens]
             tags = [t.entity_type for t in sample.tokens]
 

@@ -23,7 +23,7 @@ from ner_eval_dashboard.predictor_mixins import (
 @Predictor.register("FLAIR")
 class FlairPredictor(ScoredTokenPredictorMixin, DropoutPredictorMixin, Predictor):
     def __init__(self, name_or_path: str):
-        super(FlairPredictor, self).__init__()
+        super().__init__()
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", FutureWarning)
             self.tagger: SequenceTagger = SequenceTagger.load(name_or_path)
@@ -63,7 +63,7 @@ class FlairPredictor(ScoredTokenPredictorMixin, DropoutPredictorMixin, Predictor
     def predict(self, data: List[PreTokenizedText]) -> List[LabeledTokenizedText]:
         sentences = list(map(self._tokenized_text_to_sentence, data))
         self.tagger.eval()
-        self.tagger.predict(sentences)
+        self.tagger.predict(sentences, verbose=True)
 
         labels = map(self._sentence_to_labels, sentences)
         return self._combine_with_labels(data, labels)
@@ -71,7 +71,7 @@ class FlairPredictor(ScoredTokenPredictorMixin, DropoutPredictorMixin, Predictor
     def predict_with_dropout(self, data: List[PreTokenizedText]) -> List[LabeledTokenizedText]:
         sentences = list(map(self._tokenized_text_to_sentence, data))
         self.tagger.train()
-        self.tagger.predict(sentences)
+        self.tagger.predict(sentences, verbose=True)
 
         labels = map(self._sentence_to_labels, sentences)
         return self._combine_with_labels(data, labels)
@@ -79,7 +79,7 @@ class FlairPredictor(ScoredTokenPredictorMixin, DropoutPredictorMixin, Predictor
     def predict_token_scores(self, data: List[PreTokenizedText]) -> List[ScoredTokenizedText]:
         sentences = list(map(self._tokenized_text_to_sentence, data))
         self.tagger.eval()
-        self.tagger.predict(sentences, return_probabilities_for_all_classes=True)
+        self.tagger.predict(sentences, return_probabilities_for_all_classes=True, verbose=True)
 
         scores = map(self._sentence_to_scores, sentences)
         return self._combine_with_scores(data, scores)
