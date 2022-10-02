@@ -41,7 +41,7 @@ def paginated_table(
     pagination_id = f"{component_id}-table-pagination"
     content_id = f"{component_id}-table-body"
 
-    @callback([Input(pagination_id, "active_page")], Output(content_id, "children"))
+    @callback(Output(content_id, "children"), [Input(pagination_id, "active_page")])
     def update_page(page: Optional[int]) -> List[html.Tr]:
         if page is None:
             return rows[:page_size]
