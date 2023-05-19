@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Dict, List, Type
+from typing import Dict, List, Optional, Type
 
 import dash_bootstrap_components as dbc
 from dash import Dash
@@ -15,8 +15,8 @@ from ner_eval_dashboard.section import Section, create_base_layout, create_secti
 def __filter_components(
     components: List[Type[Component]],
     dataset: Dataset,
-    use_components: List[str] = None,
-    exclude_components: List[str] = None,
+    use_components: Optional[List[str]] = None,
+    exclude_components: Optional[List[str]] = None,
 ) -> List[Type[Component]]:
     if use_components:
         _use_components = set(use_components)
@@ -48,8 +48,8 @@ def create_app(
     name: str,
     predictor: Predictor,
     dataset: Dataset,
-    use_components: List[str] = None,
-    exclude_components: List[str] = None,
+    use_components: Optional[List[str]] = None,
+    exclude_components: Optional[List[str]] = None,
 ) -> Dash:
     app = Dash(
         name,

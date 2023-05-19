@@ -1,4 +1,4 @@
-from typing import Callable, Iterator, List, Literal, Sequence, Set, Tuple
+from typing import Callable, Iterator, List, Literal, Optional, Sequence, Set, Tuple
 
 from pydantic import BaseModel
 
@@ -58,7 +58,7 @@ class Dataset(RegisterMixin):
         train: List[LabeledText],
         val: List[LabeledText],
         test: List[LabeledText],
-        unlabeled: List[Text] = None,
+        unlabeled: Optional[List[Text]] = None,
     ):
         self._name = name
         self.tokenizer = tokenizer
