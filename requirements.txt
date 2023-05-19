@@ -6,4 +6,4 @@ loguru
 explainaboard
 gevent
 checklist @ git+https://github.com/helpmefindaname/checklist.git@master
-dill >=0.3.6
+multiprocess<0.70.10  # temporary fix, see https://github.com/apache/beam/issues/24458
