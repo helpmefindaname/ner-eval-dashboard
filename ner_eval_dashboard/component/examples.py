@@ -310,7 +310,6 @@ class TestExamplesComponent(PredictionErrorComponent):
 
 
 class UnlabeledPredictionExamplesComponent(Component, abc.ABC):
-
     dataset_requirements = (DatasetType.UNLABELED,)
     component_name = "prediction-examples"
 

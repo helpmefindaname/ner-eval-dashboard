@@ -25,7 +25,6 @@ def test_flair_dataset(dataset_name: str) -> None:
 
 @pytest.mark.skipif(flair.__version__ <= "0.11.3", reason="Flair JsonL does not support span labels yet.")
 def test_jsonl_dataset(testdata: Callable[[str], Path]) -> None:
-
     dataset = FlairJsonlDataset(SpaceTokenizer(), str(testdata("jsonl")))
     assert dataset.name == "jsonl"
     assert dataset.label_names == ["LOC", "MISC", "ORG", "PER"]
@@ -38,7 +37,6 @@ def test_jsonl_dataset(testdata: Callable[[str], Path]) -> None:
 
 
 def test_column_corpus_dataset(testdata: Callable[[str], Path]) -> None:
-
     dataset = FlairColumnDataset(SpaceTokenizer(), str(testdata("column")))
     assert dataset.name == "column"
     assert dataset.label_names == ["LOC"]

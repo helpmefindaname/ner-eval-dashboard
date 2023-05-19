@@ -26,7 +26,6 @@ def testdata() -> Callable[[Any], Path]:
 @pytest.fixture
 def test_snapshots(gen_snapshots: bool) -> Callable[[Dict[str, Any], Path], None]:
     def inner(output: Dict[str, Any], output_path: Path) -> None:
-
         if gen_snapshots:
             with output_path.open("w+", encoding="utf-8") as f:
                 json.dump(output, f, indent=4, sort_keys=True, ensure_ascii=False)
