@@ -6,3 +6,4 @@ loguru
 explainaboard
 gevent
 checklist @ git+https://github.com/helpmefindaname/checklist.git@master
+dill >=0.3.6
