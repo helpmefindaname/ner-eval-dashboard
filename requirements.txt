@@ -5,3 +5,4 @@ dash_bootstrap_components
 loguru
 explainaboard
 gevent
+checklist @ https://github.com/ecederstrand/checklist.git@patch-1
