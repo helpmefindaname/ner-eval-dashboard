@@ -43,6 +43,7 @@ from flair.datasets import (
     DataLoader,
 )
 from flair.datasets.sequence_labeling import JsonlCorpus
+from torch.utils.data import Dataset as TorchDataset
 
 from ner_eval_dashboard.datamodels import DatasetType, Label, LabeledText
 from ner_eval_dashboard.dataset import Dataset
@@ -57,7 +58,7 @@ class FlairDataset(Dataset):
         super().__init__(name, tokenizer, train=train, val=val, test=test)
 
     def _convert_dataset_to_examples(
-        self, dataset: Optional[Dataset], dataset_type: DatasetType, label_type: str
+        self, dataset: Optional[TorchDataset], dataset_type: DatasetType, label_type: str
     ) -> List[LabeledText]:
         if dataset is None:
             return []

@@ -4,6 +4,7 @@ dash
 dash_bootstrap_components
 loguru
 explainaboard
+datasets>=2.13.0
 gevent
 checklist @ git+https://github.com/helpmefindaname/checklist.git@master
 multiprocess<0.70.10  # temporary fix, see https://github.com/apache/beam/issues/24458
