@@ -1,8 +1,10 @@
-flair>=0.11
+flair>=0.12
 pydantic
 dash
 dash_bootstrap_components
 loguru
 explainaboard
+datalabs<0.3.11
+datasets>=2.13.0
 gevent
-textflint @ git+https://github.com/helpmefindaname/textflint@v0.1.1#egg=text-flint
+checklist @ git+https://github.com/helpmefindaname/checklist.git@master

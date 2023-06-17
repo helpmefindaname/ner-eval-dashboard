@@ -9,7 +9,6 @@ from ner_eval_dashboard.component.examples import (
 from ner_eval_dashboard.component.explainaboard import ExplainaboardComponent
 from ner_eval_dashboard.component.f1_metrics import F1MetricComponent
 from ner_eval_dashboard.component.per_token_stats import PerTokenStats
-from ner_eval_dashboard.component.text_flint import TextFlintComponent
 
 __all__ = [
     "Component",
@@ -21,5 +20,4 @@ __all__ = [
     "TestExamplesComponent",
     "UnlabeledPredictionExamplesComponent",
     "PerTokenStats",
-    "TextFlintComponent",
 ]

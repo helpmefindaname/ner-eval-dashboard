@@ -43,7 +43,6 @@ class DropoutRobustnessComponent(Component):
         precisions: List[Dict[str, float]],
         recalls: List[Dict[str, float]],
     ):
-
         macro_f1s = [statistics.mean(f1_score_dict(p, r, label_names).values()) for p, r in zip(precisions, recalls)]
         micro_f1s = [f1_score(p, r) for p, r in zip(micro_precisions, micro_recalls)]
 

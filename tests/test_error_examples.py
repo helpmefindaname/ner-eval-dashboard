@@ -10,7 +10,6 @@ from ner_eval_dashboard.datamodels import (
 
 
 def test_match() -> None:
-
     parameter = LabelPredictionText(
         text="I like Vienna.",
         labels=[Label(text="Vienna", start=7, end=13, entity_type="LOCATION")],
@@ -43,7 +42,6 @@ def test_match() -> None:
 
 
 def test_mismatch() -> None:
-
     parameter = LabelPredictionText(
         text="I like Vienna.",
         labels=[Label(text="Vienna", start=7, end=13, entity_type="LOCATION")],
@@ -76,7 +74,6 @@ def test_mismatch() -> None:
 
 
 def test_false_negative() -> None:
-
     parameter = LabelPredictionText(
         text="I like Vienna.",
         labels=[Label(text="Vienna", start=7, end=13, entity_type="LOCATION")],
@@ -109,7 +106,6 @@ def test_false_negative() -> None:
 
 
 def test_false_positive() -> None:
-
     parameter = LabelPredictionText(
         text="I like Music.",
         labels=[],
@@ -142,7 +138,6 @@ def test_false_positive() -> None:
 
 
 def test_partial_match() -> None:
-
     parameter = LabelPredictionText(
         text="George Washington was a President in America, but that was long ago.",
         labels=[
@@ -207,7 +202,6 @@ def test_partial_match() -> None:
 
 
 def test_partial_conll_validation_1143() -> None:
-
     parameter = LabelPredictionText(
         text="Economist Joel Naroff of First Union bank in Philadelphia said ...",
         labels=[

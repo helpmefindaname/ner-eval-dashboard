@@ -117,13 +117,14 @@ class FlairPredictor(ScoredTokenPredictorMixin, DropoutPredictorMixin, Predictor
 
     @staticmethod
     def _tokenized_text_to_sentence(text: PreTokenizedText) -> Sentence:
-        sentence = Sentence(text=[])
         previous_token: Optional[FlairToken] = None
+        tokens: List[FlairToken] = []
         for token in text.tokens:
             flair_token = FlairToken(token.text, start_position=token.start)
-            sentence.add_token(flair_token)
             if previous_token is not None:
-                previous_token.whitespace_after = flair_token.start_pos - previous_token.end_pos
+                previous_token.whitespace_after = flair_token.start_position - previous_token.end_position
             previous_token = flair_token
+            tokens.append(flair_token)
+        sentence = Sentence(text=tokens)
 
         return sentence
