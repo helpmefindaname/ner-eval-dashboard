@@ -31,7 +31,7 @@ jobs:
             build-args: |
                BUILD=test
             cache-from: type=gha
-              cache-to: type=gha,mode=max
+            cache-to: type=gha,mode=max
             tags: ${{env.tag}}
       - name: Move cache #  see https://evilmartians.com/chronicles/build-images-on-github-actions-with-docker-layer-caching
         run: |
