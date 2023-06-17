@@ -29,7 +29,7 @@ jobs:
           restore-keys: |
             buildx-
       - name: Build docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         id: docker-build
         with:
             context: .
@@ -48,7 +48,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           shell: bash
-          image: ${{steps.docker-build.outputs.imageid}}
+          image: ${{env.tag}}
           run: pytest -vv
   prep-vars:
     runs-on: ubuntu-latest
