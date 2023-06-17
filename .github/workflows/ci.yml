@@ -33,10 +33,6 @@ jobs:
             cache-from: type=gha
             cache-to: type=gha,mode=max
             tags: ${{env.tag}}
-      - name: Move cache #  see https://evilmartians.com/chronicles/build-images-on-github-actions-with-docker-layer-caching
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
       - name: run tests in docker
         uses: addnab/docker-run-action@v3
         with:
