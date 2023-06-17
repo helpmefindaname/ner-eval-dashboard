@@ -17,7 +17,7 @@ filterwarnings = [
     "ignore:The distutils package is deprecated and slated for removal in Python 3.12.:DeprecationWarning",  # deprecations on python 3.10
     'ignore:bilinear is deprecated and will be removed in Pillow 10',  # huggingface layoutlmv2 has deprecated calls.
     'ignore:nearest is deprecated and will be removed in Pillow 10',  # huggingface layoutlmv2 has deprecated calls.
-    'ignore:A filesystem protocol was already set for bz2 and will be overwritten.',  # both datasets and datalabs register basically the same file system protocols.
+    'ignore:A filesystem protocol was already set for',  # both datasets and datalabs register basically the same file system protocols.
 ]  # Convert all warnings to errors, imo warnings that are not treated as errors will be ignored by most people.
 # My approach is to throw an error and let the programmar check if the error is intended (then add it to the filterwarnings) or not (then fix it!)
 
