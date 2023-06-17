@@ -74,6 +74,8 @@ jobs:
         run: pip install -e . --no-deps
       - name: show dependencies
         run: pip freeze
+      - name: download nltk
+        run: python -c 'import nltk;nltk.download("punkt")'
       - name: Run tests including flake8 and mypy, etc.
         run: pytest -vv
   build-n-publish:
