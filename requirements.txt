@@ -3,6 +3,7 @@ pydantic
 dash
 dash_bootstrap_components
 loguru
+explainaboard
 datalabs<0.3.11
 datasets>=2.13.0
 gevent
