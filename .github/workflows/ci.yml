@@ -66,6 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: prep-vars
     strategy:
+      fail-fast: false
       matrix: ${{fromJson(needs.prep-vars.outputs.matrix)}}
     steps:
       - name: Checkout code
