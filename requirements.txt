@@ -3,7 +3,7 @@ pydantic
 dash
 dash_bootstrap_components
 loguru
-explainaboard<0.11
+explainaboard<0.9.2
 datasets>=2.13.0
 gevent
 checklist @ git+https://github.com/helpmefindaname/checklist.git@master
