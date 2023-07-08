@@ -10,8 +10,8 @@ filterwarnings = [
     "error",
     'ignore:invalid escape sequence', # datalabs has a regex that doesn't use raw string, invalid at python 3.11+
     'ignore:A filesystem protocol was already set for', # both datasets and datalabs register basically the same file system protocols.
-    'ignore:The asyncore module is deprecated and will be removed in Python 3.12', # plac cli adds a example that is invalid.
-    'ignore:The asynchat module is deprecated and will be removed in Python 3.12', # plac cli adds a example that is invalid.
+    'ignore:The asyncore module is deprecated', # plac cli adds a example that is invalid.
+    'ignore:The asynchat module is deprecated', # plac cli adds a example that is invalid.
 ]  # Convert all warnings to errors, imo warnings that are not treated as errors will be ignored by most people.
 # My approach is to throw an error and let the programmar check if the error is intended (then add it to the filterwarnings) or not (then fix it!)
 
