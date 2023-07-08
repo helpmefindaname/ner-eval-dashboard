@@ -3,21 +3,15 @@ line-length = 120
 target-version = ['py310']
 
 [tool.pytest.ini_options]
-flake8-max-line-length = 120
-flake8-ignore = ["E203", "W503"]  # See https://github.com/PyCQA/pycodestyle/issues/373
-addopts = "--flake8 --mypy --isort -n auto"
+addopts = "--ruff --mypy --black -n auto"
 markers = ["debug"]
 testpaths = ["ner_eval_dashboard", "tests"]
 filterwarnings = [
     "error",
-    "ignore:The 'warn' method is deprecated, use 'warning' instead:DeprecationWarning",  # transformers>=4.22.1 should fix it
-    "ignore:Please use `triu` from the `scipy:DeprecationWarning",  # gensim needs an update
-    # "ignore:`cached_download`",  # flair 0.12+ should solve this.
-    "ignore:SelectableGroups dict interface is deprecated. Use select.",  # deprecations on python 3.10
-    "ignore:The distutils package is deprecated and slated for removal in Python 3.12.:DeprecationWarning",  # deprecations on python 3.10
-    'ignore:bilinear is deprecated and will be removed in Pillow 10',  # huggingface layoutlmv2 has deprecated calls.
-    'ignore:nearest is deprecated and will be removed in Pillow 10',  # huggingface layoutlmv2 has deprecated calls.
-    'ignore:A filesystem protocol was already set for',  # both datasets and datalabs register basically the same file system protocols.
+    'ignore:invalid escape sequence', # datalabs has a regex that doesn't use raw string, invalid at python 3.11+
+    'ignore:A filesystem protocol was already set for', # both datasets and datalabs register basically the same file system protocols.
+    'ignore:The asyncore module is deprecated', # plac cli adds a example that is invalid.
+    'ignore:The asynchat module is deprecated', # plac cli adds a example that is invalid.
 ]  # Convert all warnings to errors, imo warnings that are not treated as errors will be ignored by most people.
 # My approach is to throw an error and let the programmar check if the error is intended (then add it to the filterwarnings) or not (then fix it!)
 
@@ -32,3 +26,47 @@ warn_no_return = true
 
 [tool.isort]
 profile = "black"
+
+[tool.poetry]
+name = "ner-eval-dashboard"
+version = "0.1.0"
+description = "Dashboard for Quality-driven NER."
+authors = ["Benedikt Fuchs <benedikt.fuchs.staw@hotmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "ner_eval_dashboard" }]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+flair = "^0.12"
+pydantic = "^2.0"
+dash = "^2.11"
+dash_bootstrap_components = "^1.4"
+loguru = "^0.7"
+explainaboard = "^0.9"
+datasets = "^2.13.0"
+checklist = { git = "https://github.com/helpmefindaname/checklist.git", branch = "master" }
+datalabs = "<0.3.11"
+torch = "!=2.0.1"  # torch 2.0.1 does not add full metadata to their json api
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0"
+pytest-mypy = "^0.10"
+pytest-ruff = "^0.1"
+pytest-black-ng = "^0.4.0"
+ruff = "^0.0.277"
+black = "^23.3.0"
+pytest-xdist = "^3.3.0"
+urllib3 = "<2"
+multiprocess = [
+    { version = "<0.70.11", python = "<3.9" },
+    { version = ">=0.70.11", python = ">=3.9" },
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+target-version = 'py310'
