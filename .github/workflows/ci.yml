@@ -37,8 +37,8 @@ jobs:
             push: false
             build-args: |
                BUILD=test
-            cache-from: type=gha
-            cache-to: type=gha,mode=max
+            # cache-from: type=gha
+            # cache-to: type=gha,mode=max
             tags: ${{ env.tag }}
       - name: run tests in docker
         run: |
