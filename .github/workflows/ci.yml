@@ -15,7 +15,7 @@ jobs:
   test-docker:
     runs-on: ubuntu-latest
     env:
-      tag: "docker-${{ github.sha }}:latest"
+      tag: "helpmefindaname/ner-eval-dashboard-${{ github.sha }}:latest"
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -32,13 +32,10 @@ jobs:
                BUILD=test
             cache-from: type=gha
             cache-to: type=gha,mode=max
-            tags: ${{env.tag}}
+            tags: ${{ env.tag }}
       - name: run tests in docker
-        uses: addnab/docker-run-action@v3
-        with:
-          shell: bash
-          image: ${{env.tag}}
-          run: pytest -vv
+        run: |
+          docker run --rm ${{ env.tag }} pytest -vv
   prep-vars:
     runs-on: ubuntu-latest
     outputs:
@@ -132,5 +129,3 @@ jobs:
           tags: |
             helpmefindaname/ner-eval-dashboard:${{ env.RELEASE_VERSION }}
             helpmefindaname/ner-eval-dashboard:latest
-          build-args: |
-            BUILD_VERSION=${{ env.RELEASE_VERSION }}
