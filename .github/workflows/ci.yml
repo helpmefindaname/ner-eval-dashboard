@@ -41,9 +41,11 @@ jobs:
             # cache-to: type=gha,mode=max
             tags: ${{ env.tag }}
       - name: run tests in docker
-        run: |
-          docker images
-          docker run --rm ${{ env.tag }} pytest -vv
+        uses: addnab/docker-run-action@v3
+        with:
+          shell: bash
+          image: ${{env.tag}}
+          run: pytest -vv
   prep-vars:
     runs-on: ubuntu-latest
     outputs:
