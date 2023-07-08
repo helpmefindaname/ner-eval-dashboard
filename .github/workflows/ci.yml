@@ -37,6 +37,7 @@ jobs:
             tags: ${{ env.tag }}
       - name: run tests in docker
         run: |
+          docker images
           docker run --rm ${{ env.tag }} pytest -vv
   prep-vars:
     runs-on: ubuntu-latest
