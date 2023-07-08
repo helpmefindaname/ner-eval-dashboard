@@ -9,13 +9,9 @@ testpaths = ["ner_eval_dashboard", "tests"]
 filterwarnings = [
     "error",
     'ignore:invalid escape sequence', # datalabs has a regex that doesn't use raw string, invalid at python 3.11+
-    "ignore:Please use `triu` from the `scipy:DeprecationWarning", # gensim needs an update
-    "ignore:SelectableGroups dict interface is deprecated. Use select.", # deprecations on python 3.10
-    "ignore:The distutils package is deprecated and slated for removal in Python 3.12.:DeprecationWarning", # deprecations on python 3.10
-    'ignore:bilinear is deprecated and will be removed in Pillow 10', # huggingface layoutlmv2 has deprecated calls.
-    'ignore:nearest is deprecated and will be removed in Pillow 10', # huggingface layoutlmv2 has deprecated calls.
     'ignore:A filesystem protocol was already set for', # both datasets and datalabs register basically the same file system protocols.
     'ignore:The asyncore module is deprecated and will be removed in Python 3.12', # plac cli adds a example that is invalid.
+    'ignore:The asynchat module is deprecated and will be removed in Python 3.12', # plac cli adds a example that is invalid.
 ]  # Convert all warnings to errors, imo warnings that are not treated as errors will be ignored by most people.
 # My approach is to throw an error and let the programmar check if the error is intended (then add it to the filterwarnings) or not (then fix it!)
 
