@@ -8,7 +8,7 @@ markers = ["debug"]
 testpaths = ["ner_eval_dashboard", "tests"]
 filterwarnings = [
     "error",
-    'ignore:invalid escape sequence',  # datalabs has a regex that doesn't use raw string, invalid at python 3.11+
+    'ignore:invalid escape sequence', # datalabs has a regex that doesn't use raw string, invalid at python 3.11+
     "ignore:The 'warn' method is deprecated, use 'warning' instead:DeprecationWarning", # transformers>=4.22.1 should fix it
     "ignore:Please use `triu` from the `scipy:DeprecationWarning", # gensim needs an update
     # "ignore:`cached_download`",  # flair 0.12+ should solve this.
@@ -63,7 +63,10 @@ ruff = "^0.0.277"
 black = "^23.3.0"
 pytest-xdist = "^3.3.0"
 urllib3 = "<2"
-multiprocess = "<0.70.11"
+multiprocess = [
+    { version = "<0.70.11", python = "<3.9" },
+    { version = ">=0.70.11", python = ">=3.9" },
+]
 
 [build-system]
 requires = ["poetry-core"]
