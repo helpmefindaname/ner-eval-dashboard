@@ -47,7 +47,7 @@ explainaboard = "^0.9"
 datasets = "^2.13.0"
 checklist = { git = "https://github.com/helpmefindaname/checklist.git", branch = "master" }
 datalabs = "<0.3.11"
-torch = "!=2.0.1"
+torch = "!=2.0.1"  # torch 2.0.1 does not add full metadata to their json api
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0"
