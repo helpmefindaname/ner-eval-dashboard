@@ -9,7 +9,6 @@ testpaths = ["ner_eval_dashboard", "tests"]
 filterwarnings = [
     "error",
     'ignore:invalid escape sequence', # datalabs has a regex that doesn't use raw string, invalid at python 3.11+
-    "ignore:The 'warn' method is deprecated, use 'warning' instead:DeprecationWarning", # transformers>=4.22.1 should fix it
     "ignore:Please use `triu` from the `scipy:DeprecationWarning", # gensim needs an update
     "ignore:SelectableGroups dict interface is deprecated. Use select.", # deprecations on python 3.10
     "ignore:The distutils package is deprecated and slated for removal in Python 3.12.:DeprecationWarning", # deprecations on python 3.10
