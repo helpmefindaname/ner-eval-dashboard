@@ -103,7 +103,7 @@ jobs:
         run: poetry build
       - name: Publish
         if: ${{env.is_package}}
-        run: poetry publish -u __token__ -p ${{ secrets.PYPI_TOKEN }} -vv
+        run: poetry publish -u __token__ -p ${{ secrets.PYPI_API_TOKEN }} -vv
   publish-docker:
     name: Publish docker file and push it to a registry
     runs-on: ubuntu-latest
