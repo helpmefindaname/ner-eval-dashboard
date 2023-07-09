@@ -39,7 +39,7 @@ def __prediction_partial_match(
 
     while last_pos < max(end_pred, end_label):
         spans.append(
-            ErrorSpan.construct(
+            ErrorSpan.model_construct(
                 text=text[last_pos : min(end_pred, end_label)],
                 error=ErrorType.PARTIAL_MATCH
                 if labels[label_idx].entity_type == preds[pred_idx].entity_type
@@ -54,7 +54,7 @@ def __prediction_partial_match(
             if pred_idx < pred_n:
                 if preds[pred_idx].start >= end_label:
                     spans.append(
-                        ErrorSpan.construct(
+                        ErrorSpan.model_construct(
                             text=text[last_pos:end_label],
                             error=ErrorType.PARTIAL_FALSE_NEGATIVE,
                             expected=labels[label_idx].entity_type,
@@ -66,7 +66,7 @@ def __prediction_partial_match(
                 elif last_pos < preds[pred_idx].start:
                     end_pred = preds[pred_idx].end
                     spans.append(
-                        ErrorSpan.construct(
+                        ErrorSpan.model_construct(
                             text=text[last_pos : preds[pred_idx].start],
                             error=ErrorType.PARTIAL_FALSE_NEGATIVE,
                             expected=labels[label_idx].entity_type,
@@ -76,7 +76,7 @@ def __prediction_partial_match(
                     last_pos = preds[pred_idx].start
             else:
                 spans.append(
-                    ErrorSpan.construct(
+                    ErrorSpan.model_construct(
                         text=text[last_pos:end_label],
                         error=ErrorType.PARTIAL_FALSE_NEGATIVE,
                         expected=labels[label_idx].entity_type,
@@ -90,7 +90,7 @@ def __prediction_partial_match(
             if label_idx < label_n:
                 if labels[label_idx].start >= end_pred:
                     spans.append(
-                        ErrorSpan.construct(
+                        ErrorSpan.model_construct(
                             text=text[last_pos:end_pred],
                             error=ErrorType.PARTIAL_FALSE_POSITIVE,
                             expected=None,
@@ -102,7 +102,7 @@ def __prediction_partial_match(
                 elif last_pos < labels[label_idx].start:
                     end_label = labels[label_idx].end
                     spans.append(
-                        ErrorSpan.construct(
+                        ErrorSpan.model_construct(
                             text=text[last_pos : labels[label_idx].start],
                             error=ErrorType.PARTIAL_FALSE_POSITIVE,
                             expected=None,
@@ -112,7 +112,7 @@ def __prediction_partial_match(
                     last_pos = labels[label_idx].start
             else:
                 spans.append(
-                    ErrorSpan.construct(
+                    ErrorSpan.model_construct(
                         text=text[last_pos:end_pred],
                         error=ErrorType.PARTIAL_FALSE_POSITIVE,
                         expected=None,
@@ -140,7 +140,7 @@ def __prediction_error_spans(text: str, preds: List[Label], labels: List[Label])
         next_pred = preds[pred_idx].start if pred_idx < pred_n else text_n
         next_pos = min(next_pred, next_label)
         if last_pos < next_pos:
-            yield ErrorSpan.construct(
+            yield ErrorSpan.model_construct(
                 text=text[last_pos:next_pos],
                 error=ErrorType.NONE,
                 expected=None,
@@ -150,7 +150,7 @@ def __prediction_error_spans(text: str, preds: List[Label], labels: List[Label])
             if last_pos == text_n:
                 break
         if next_pred < next_label and preds[pred_idx].end <= next_label:
-            yield ErrorSpan.construct(
+            yield ErrorSpan.model_construct(
                 text=preds[pred_idx].text,
                 error=ErrorType.FALSE_POSITIVE,
                 expected=None,
@@ -160,7 +160,7 @@ def __prediction_error_spans(text: str, preds: List[Label], labels: List[Label])
             pred_idx += 1
             continue
         if next_label < next_pred and labels[label_idx].end <= next_pred:
-            yield ErrorSpan.construct(
+            yield ErrorSpan.model_construct(
                 text=labels[label_idx].text,
                 error=ErrorType.FALSE_NEGATIVE,
                 expected=labels[label_idx].entity_type,
@@ -170,7 +170,7 @@ def __prediction_error_spans(text: str, preds: List[Label], labels: List[Label])
             label_idx += 1
             continue
         if next_pred == next_label and preds[pred_idx].end == labels[label_idx].end:
-            yield ErrorSpan.construct(
+            yield ErrorSpan.model_construct(
                 text=labels[label_idx].text,
                 error=ErrorType.MATCH
                 if labels[label_idx].entity_type == preds[pred_idx].entity_type
@@ -184,14 +184,14 @@ def __prediction_error_spans(text: str, preds: List[Label], labels: List[Label])
             continue
         if last_pos < max(next_pred, next_label):
             if next_pred < next_label:
-                yield ErrorSpan.construct(
+                yield ErrorSpan.model_construct(
                     text=text[last_pos:next_label],
                     error=ErrorType.PARTIAL_FALSE_POSITIVE,
                     expected=None,
                     predicted=preds[pred_idx].entity_type,
                 )
             else:
-                yield ErrorSpan.construct(
+                yield ErrorSpan.model_construct(
                     text=text[last_pos:next_pred],
                     error=ErrorType.PARTIAL_FALSE_NEGATIVE,
                     expected=labels[label_idx].entity_type,
@@ -205,7 +205,7 @@ def __prediction_error_spans(text: str, preds: List[Label], labels: List[Label])
 
 
 def create_prediction_error_span(prediction_label_text: LabelPredictionText) -> PredictionErrorSpans:
-    return PredictionErrorSpans.construct(
+    return PredictionErrorSpans.model_construct(
         spans=list(
             __prediction_error_spans(
                 prediction_label_text.text, prediction_label_text.predictions, prediction_label_text.labels

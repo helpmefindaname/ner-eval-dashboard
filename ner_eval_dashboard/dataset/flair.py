@@ -78,12 +78,12 @@ class FlairDataset(Dataset):
     def _convert_sentence_to_labeled_text(
         self, sentence: Sentence, idx: int, dataset_type: DatasetType, label_type: str
     ) -> LabeledText:
-        return LabeledText.construct(
+        return LabeledText.model_construct(
             dataset_text_id=idx,
             dataset_type=dataset_type,
             text=sentence.to_original_text(),
             labels=[
-                Label.construct(
+                Label.model_construct(
                     entity_type=span.tag,
                     start=span.start_position,
                     end=span.end_position,

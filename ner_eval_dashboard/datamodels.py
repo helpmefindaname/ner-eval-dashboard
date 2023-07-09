@@ -47,7 +47,7 @@ class Token(BaseModel):
     text: str
 
     def to_token(self) -> "Token":
-        return Token.construct(text=self.text, start=self.start, end=self.end)
+        return Token.model_construct(text=self.text, start=self.start, end=self.end)
 
     @pydantic.field_validator("text")
     def validate_text_length(cls, field_value: str, info: FieldValidationInfo) -> str:

@@ -7,14 +7,14 @@ import pytest
 
 @pytest.fixture(scope="session", autouse=True)
 @no_type_check
-def pydantic_construct_validation() -> None:
+def pydantic_model_construct_validation() -> None:
     from pydantic import BaseModel
 
     @classmethod
     def create_model_with_validation(cls, *args, **kwargs) -> BaseModel:
         return cls(*args, **kwargs)
 
-    BaseModel.construct = create_model_with_validation
+    BaseModel.model_construct = create_model_with_validation
 
 
 @pytest.fixture
