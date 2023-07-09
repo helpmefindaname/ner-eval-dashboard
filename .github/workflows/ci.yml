@@ -104,7 +104,7 @@ jobs:
       - name: Publish
         if: ${{env.is_package}}
         run: |
-          poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
+          poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
           poetry publish --build
   publish-docker:
     name: Publish docker file and push it to a registry
