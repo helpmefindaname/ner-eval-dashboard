@@ -26,7 +26,7 @@ def combine_span_tags(tags: List[Label]) -> Label:
         text += " " * (tag.start - last)
         text += tag.text
         last = tag.end
-    return Label.construct(start=start, end=end, entity_type=label, text=text)
+    return Label.model_construct(start=start, end=end, entity_type=label, text=text)
 
 
 def convert_tags_to_labeled_text(
@@ -38,7 +38,7 @@ def convert_tags_to_labeled_text(
         labels = list(extractor_fn(example.tokens))
 
         results.append(
-            LabeledTokenizedText.construct(
+            LabeledTokenizedText.model_construct(
                 dataset_type=example.dataset_type,
                 dataset_text_id=example.dataset_text_id,
                 tokens=tokens,
@@ -152,7 +152,7 @@ class Dataset(RegisterMixin):
     ) -> List[TokenLabeledText]:
         return [
             TokenLabeledText.from_labeled_tokenized_text(
-                LabeledTokenizedText.construct(
+                LabeledTokenizedText.model_construct(
                     tokens=tokenized.tokens,
                     dataset_text_id=tokenized.dataset_text_id,
                     dataset_type=tokenized.dataset_type,
@@ -176,7 +176,7 @@ class Dataset(RegisterMixin):
         start_id = len(self._unlabeled)
         self._unlabeled.extend(
             [
-                Text.construct(text=text, dataset_text_id=i, dataset_type=DatasetType.UNLABELED)
+                Text.model_construct(text=text, dataset_text_id=i, dataset_type=DatasetType.UNLABELED)
                 for i, text in enumerate(texts, start=start_id)
             ]
         )

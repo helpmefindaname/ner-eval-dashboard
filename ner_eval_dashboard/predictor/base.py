@@ -64,7 +64,7 @@ class Predictor(abc.ABC, RegisterMixin):
         data: Iterable[PreTokenizedText], labels: Iterable[List[Label]]
     ) -> List[LabeledTokenizedText]:
         return [
-            LabeledTokenizedText.construct(
+            LabeledTokenizedText.model_construct(
                 tokens=text.tokens,
                 dataset_type=text.dataset_type,
                 dataset_text_id=text.dataset_text_id,
@@ -78,9 +78,9 @@ class Predictor(abc.ABC, RegisterMixin):
         data: Iterable[PreTokenizedText], data_scores: Iterable[List[List[ScoredLabel]]]
     ) -> List[ScoredTokenizedText]:
         return [
-            ScoredTokenizedText.construct(
+            ScoredTokenizedText.model_construct(
                 tokens=[
-                    ScoredToken.construct(
+                    ScoredToken.model_construct(
                         start=token.start,
                         end=token.end,
                         text=token.text,

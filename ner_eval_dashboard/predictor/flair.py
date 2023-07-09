@@ -86,7 +86,7 @@ class FlairPredictor(ScoredTokenPredictorMixin, DropoutPredictorMixin, Predictor
 
     def _sentence_to_labels(self, sentence: Sentence) -> List[Label]:
         return [
-            Label.construct(
+            Label.model_construct(
                 entity_type=span.tag,
                 start=span.start_position,
                 end=span.end_position,
@@ -98,7 +98,7 @@ class FlairPredictor(ScoredTokenPredictorMixin, DropoutPredictorMixin, Predictor
     def _sentence_to_scores(self, sentence: Sentence) -> List[List[ScoredLabel]]:
         return [
             [
-                ScoredLabel.construct(
+                ScoredLabel.model_construct(
                     tag=label.value,
                     score=label.score,
                 )

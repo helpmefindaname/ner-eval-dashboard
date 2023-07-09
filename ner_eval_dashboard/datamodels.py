@@ -82,7 +82,7 @@ class PreTokenizedText(BaseElement):
         for word in words:
             end = start + len(word)
             tokens.append(
-                Token.construct(
+                Token.model_construct(
                     start=start,
                     end=end,
                     text=word,
@@ -135,7 +135,7 @@ class TokenLabeledText(BaseElement):
                         middle_or_end_tag = "L"
 
                 labeled_tokens.append(
-                    Label.construct(
+                    Label.model_construct(
                         text=token.text,
                         entity_type=f"{middle_or_end_tag}-{current_label.entity_type}",
                         start=token.start,
@@ -146,7 +146,7 @@ class TokenLabeledText(BaseElement):
             current_label = None
             if next_label is None or next_label.start > token.end:
                 labeled_tokens.append(
-                    Label.construct(
+                    Label.model_construct(
                         text=token.text,
                         entity_type="O",
                         start=token.start,
@@ -162,7 +162,7 @@ class TokenLabeledText(BaseElement):
                 if tag_format == "BILOU":
                     start_tag = "U"
             labeled_tokens.append(
-                Label.construct(
+                Label.model_construct(
                     text=token.text,
                     entity_type=f"{start_tag}-{current_label.entity_type}",
                     start=token.start,
@@ -171,7 +171,7 @@ class TokenLabeledText(BaseElement):
             )
             next_label = next(labels, None)
 
-        return cls.construct(
+        return cls.model_construct(
             tokens=labeled_tokens,
             dataset_type=labeled_tokenized_text.dataset_type,
             dataset_text_id=labeled_tokenized_text.dataset_text_id,
@@ -191,7 +191,7 @@ class LabeledText(Text):
             text += " " * (token.start - last)
             text += token.text
             last = token.end
-        return cls.construct(
+        return cls.model_construct(
             text=text,
             labels=labeled_tokenized_text.labels,
             dataset_type=labeled_tokenized_text.dataset_type,
@@ -231,7 +231,7 @@ class LabelPredictionText(BaseElement):
     def from_prediction_label_pair(
         cls, predictions: LabeledTokenizedText, labels: LabeledText
     ) -> "LabelPredictionText":
-        return LabelPredictionText.construct(
+        return LabelPredictionText.model_construct(
             text=labels.text,
             labels=labels.labels,
             predictions=predictions.labels,

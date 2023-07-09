@@ -20,4 +20,4 @@ def assert_dataset_standards(dataset: Dataset) -> None:
 
 def test_validation_fails_when_testing() -> None:
     with pytest.raises(ValidationError):
-        Token.construct(text="abc", start=0, end=1)
+        Token.model_construct(text="abc", start=0, end=1)
